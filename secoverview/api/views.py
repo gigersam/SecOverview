@@ -3,6 +3,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
+from ransomwarelive.models import RansomwareliveVictim, RansomwareliveGroupsGroup, RansomwareliveGroupsLocation, RansomwareliveGroupsProfile
+import requests
 
 @api_view(['POST'])
 def logout_view(request):
@@ -24,3 +26,30 @@ def protected_view(request):
 @permission_classes([IsAuthenticated])
 def test():
     return Response({"message": f"Hello, testsite! This is a protected API."})
+
+@api_view(['GET'])
+#@permission_classes([IsAuthenticated])
+def fetch_victims(request):
+    response = requests.get('https://data.ransomware.live/victims.json')
+    if response.status_code == 200:
+        data = response.json()
+        for victim in data:
+            RansomwareliveVictim.add_post(victim)
+        return Response({'message': 'Victims data fetched and added successfully'}, status=200)
+    return Response({'error': 'Failed to fetch victims data'}, status=500)
+
+@api_view(['GET'])
+#@permission_classes([IsAuthenticated])
+def fetch_groups(request):
+    response = requests.get('https://data.ransomware.live/groups.json')
+    if response.status_code == 200:
+        data = response.json()
+        for group_data in data:
+            group, created = RansomwareliveGroupsGroup.objects.get_or_create(name=group_data['name'])
+            for location in group_data.get('locations', []):
+                RansomwareliveGroupsLocation.objects.get_or_create(fqdn=location['fqdn'], group=group)
+            for profile in group_data.get('profile', []):
+                RansomwareliveGroupsProfile.objects.get_or_create(link=profile, group=group)
+        return Response({'message': 'Groups data fetched and added successfully'}, status=200)
+    return Response({'error': 'Failed to fetch groups data'}, status=500)
+
