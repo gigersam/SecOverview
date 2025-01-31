@@ -1,0 +1,107 @@
+body {
+    font-family: Arial;
+}
+
+nav {
+    margin: 0;
+
+}
+
+footer {
+    position: relative;
+    bottom: 0;
+}
+
+code {
+    color: #000000;
+    background-color: #f4f4f4;
+    padding: 2px;
+    border-radius: 2px;
+}
+pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border: 1px solid #ccc;
+    overflow: auto;
+}
+
+.code_left {
+    text-align: left !important;
+}
+
+.body-content {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.index_body {
+    background: url(/static/app/pictures/index_Skate.JPG) 50% 0 no-repeat fixed;
+    position: relative;
+    background-position: 0% 25%;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    overflow: hidden;
+    border-radius: 0 !Important;
+}
+
+.index_div {
+    height: 200px;
+    width: 400px;
+    background-color: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -200px;
+    opacity: 1;
+    color: white;
+}
+
+.index_h1 {
+    display: block;
+    font-size: 6em;
+    opacity: 2;
+}
+
+@media (min-width: 992px) {
+    .navbar-center {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/*.jumbotron {
+    background-image: url("/static/app/pictures/index_Skate.JPG");
+    background-size: cover;
+    background-position: center;
+    margin-top: 2%;
+    position: relative;
+}
+
+
+
+.jumbotron {
+    margin-top: 2%;
+    position: relative;
+    background: url(/static/app/pictures/index_Skate.JPG);
+    background-position: center top; 
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    overflow: hidden;
+    border-radius: 0 !Important;
+}*/
