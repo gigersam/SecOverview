@@ -23,5 +23,6 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('ransomwarelive/', include('ransomwarelive.urls')),
+    path('nmap/', include('nmapapp.urls')),
     path('api/', include('api.urls')),
 ]

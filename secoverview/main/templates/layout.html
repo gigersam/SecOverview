@@ -24,8 +24,14 @@
               <a class="nav-link" href="{% url 'index' %}">Home</a>
             </li>
             {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'index' %}">Blog</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Tools
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'nmapoverview' %}">NMAP</a></li>
+                <li><a class="dropdown-item" href="{% url 'ransomwarelive' %}">Ransomware Data</a></li>
+              </ul>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'index' %}">About</a>

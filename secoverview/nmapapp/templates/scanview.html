@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>Scan {{ scans.ip }} from {{ scans.created_at }}</h1>
+    <p><b>Scan Date: </b>{{ scans.created_at }}</p>
+    <p><b>IP-Range: </b>{{ scans.ip }}</p>
+    <p><b>Scan-Parameters: </b>{{ scans.parameters }}</p>
+    <p>{{ scans.data }}</p>
+</div>
+
+{% endblock %}

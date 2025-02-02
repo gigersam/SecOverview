@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 from ransomwarelive.models import RansomwareliveVictim, RansomwareliveGroupsGroup, RansomwareliveGroupsLocation, RansomwareliveGroupsProfile
 import requests
+import nmap
 
 @api_view(['POST'])
 def logout_view(request):
@@ -52,4 +53,32 @@ def fetch_groups(request):
                 RansomwareliveGroupsProfile.objects.get_or_create(link=profile, group=group)
         return Response({'message': 'Groups data fetched and added successfully'}, status=200)
     return Response({'error': 'Failed to fetch groups data'}, status=500)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def nmap_scan(request):
+    # Ensure request data is JSON
+    if not isinstance(request.data, dict):
+        return Response({'error': 'Invalid JSON'}, status=400)
+    
+    # Access JSON data
+    ip = request.data.get('ip', 'Guest')
+    parameters = request.data.get('parameters', None)
+
+    scanner = nmap.PortScanner()
+    try:
+        # Scan the subnet with service detection
+        scanner.scan(hosts=ip, arguments=parameters)
+        combined = []
+        for host in scanner.all_hosts():
+            combined.append(scanner[host])
+
+        return Response(combined, status=200)
+
+    except Exception as e:
+        return Response(e, status=500)
+
+
+    
 

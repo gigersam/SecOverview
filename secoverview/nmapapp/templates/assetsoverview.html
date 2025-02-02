@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>Assets</h1>
+    <form class="d-flex">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    <table class="table table-hover">
+        <tr>
+            <td>Name</td>
+            <td>IP-Address</td>
+            <td>Scan-Report</td>
+            <td>Actions</td>
+        </tr>
+        {% for asset in assets %}
+        <tr>
+            <td>{{ asset.name }}</td>
+            <td>{{ asset.ip_address }}</td>
+            <td>{{ asset.added_by_scan }}</td>
+            <td><a href="{% url 'assetview' asset.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="pagination">
+    <span class="step-links">
+
+        <span class="current">
+            Page {{ assets.number }} of {{ assets.paginator.num_pages }}.
+        </span>
+
+        {% if assets.has_previous %}
+            <a href="?page=1" class="btn btn-default">First</a>
+            <a href="?page={{ assets.previous_page_number }}" class="btn btn-default">Previous</a>
+        {% endif %}
+
+        {% if assets.has_next %}
+            <a href="?page={{ assets.next_page_number }}" class="btn btn-default">Next</a>
+            <a href="?page={{ assets.paginator.num_pages }}" class="btn btn-default">Last</a>
+        {% endif %}
+    </span>
+</div>
+
+
+{% endblock %}

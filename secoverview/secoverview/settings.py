@@ -45,11 +45,12 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist', # Blacklist tokens
 
     # Custom Apps
+    'api',
     'accounts',
     'main',
     'dashboard',
     'ransomwarelive',
-    'api',
+    'nmapapp',
 ]
 
 MIDDLEWARE = [

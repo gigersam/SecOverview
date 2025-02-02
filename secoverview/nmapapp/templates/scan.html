@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>NMAP Scan</h1>
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="id_IP">IP/Subnet:</label>
+        <input type="text" class="form-control" name="ip" id="id_IP" required><br><br>
+
+        <label for="id_parameters">Scan-Parameters:</label>
+        <input type="text" class="form-control" name="parameters" id="id_parameters" required><br><br>
+
+        <button type="submit" class="btn btn-dark">Submit</button>
+
+    </form>
+</div>
+
+{% endblock %}

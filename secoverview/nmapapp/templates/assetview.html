@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>Asset {{ assets.ip_address }}</h1>
+    <p><b>Asset Name: </b>{{ assets.name }}</p>
+    <p><b>Asset IP: </b>{{ assets.ip_address }}</p>
+    <p><b>Asset Disovery Report: </b><a href="{% url 'scanview' assets.added_by_scan.pk %}"><button type="button" class="btn btn-dark">{{ assets.added_by_scan }}</button></a></p>
+</div>
+
+{% endblock %}
