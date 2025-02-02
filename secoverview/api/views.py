@@ -17,19 +17,13 @@ def logout_view(request):
     except Exception as e:
         return Response({"error": str(e)}, status=400)
 
-# Protected API view
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def protected_view(request):
-    return Response({"message": f"Hello, {request.user.username}! This is a protected API."})
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def test():
     return Response({"message": f"Hello, testsite! This is a protected API."})
 
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def fetch_victims(request):
     response = requests.get('https://data.ransomware.live/victims.json')
     if response.status_code == 200:
@@ -40,7 +34,7 @@ def fetch_victims(request):
     return Response({'error': 'Failed to fetch victims data'}, status=500)
 
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def fetch_groups(request):
     response = requests.get('https://data.ransomware.live/groups.json')
     if response.status_code == 200:
