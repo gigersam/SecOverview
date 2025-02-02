@@ -7,7 +7,6 @@ def local_api_request(api_url, data):
 
     try:
         # Make the request to get the token
-        print(token_url)
         response = requests.post(token_url, json=credentials)
         response.raise_for_status()  # Raise error if request fails
 
