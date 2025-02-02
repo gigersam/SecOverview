@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>Victim {{ victims.post_title }}</h1>
+    <p><b>Victim Name: </b>{{ victims.post_title }}</p>
+    <p><b>Victim Discovered: </b>{{ victims.discovered }}</p>
+    <p><b>Victim Discover URL: </b>{{ victims.post_url }}</p>
+    <p><b>Victim Country: </b>{{ victims.country }}</p>
+    <p><b>Victim Website: </b>{{ victims.website }}</p>
+    <p><b>Victim Description: </b>{{ victims.description }}</p>
+    <p><b>Victim Group: </b><a href="{% url 'groupview' victims.group.pk %}"><button type="button" class="btn btn-dark">{{ victims.group.name }}</button></a></p>
+</div>
+
+{% endblock %}

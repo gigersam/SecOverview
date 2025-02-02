@@ -3,7 +3,44 @@
 {% block content %}
 
 <div class="p-4">
-    <h1>RANSOMWARELIVE</h1>
+    <h1>ransomwarelive Overview</h1>
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>Victims</h3> 
+        <a href="{% url 'victimsoverview' %}"><button type="button" class="btn btn-dark">Overview Victims</button></a>
+        <a href="{% url 'ransomwarelive' %}"><button type="button" class="btn btn-dark">Update Victims and Groups</button></a>
+    </div>
+    <table class="table table-hover">
+        <tr>
+            <td>Name</td>
+            <td>Country</td>
+            <td>Description</td>
+            <td>Actions</td>
+        </tr>
+        {% for victim in victims %}
+        <tr>
+            <td>{{ victim.post_title }}</td>
+            <td>{{ victim.country }}</td>
+            <td>{{ victim.description }}</td>
+            <td><a href="{% url 'victimview' victim.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>Groups</h3>
+        <a href="{% url 'groupsoverview' %}"><button type="button" class="btn btn-dark">Overview Groups</button></a>
+    </div>
+    <table class="table table-hover">
+        <tr>
+            <td>Name</td>
+            <td>Actions</td>
+        </tr>
+        {% for group in groups %}
+        <tr>
+            <td>{{ group.name }}</td>
+            <td><a href="{% url 'groupview' group.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 
 {% endblock %}

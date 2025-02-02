@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>Groups</h1>
+    <form class="d-flex">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    <table class="table table-hover">
+        <tr>
+            <td>Group</td>
+            <td>Action</td>
+        </tr>
+        {% for group in groups %}
+        <tr>
+            <td>{{ group.name }}</td>
+            <td><a href="{% url 'groupview' group.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="pagination">
+    <span class="step-links">
+
+        <span class="current">
+            Page {{ groups.number }} of {{ groups.paginator.num_pages }}.
+        </span>
+
+        {% if groups.has_previous %}
+            <a href="?page=1" class="btn btn-default">First</a>
+            <a href="?page={{ groups.previous_page_number }}" class="btn btn-default">Previous</a>
+        {% endif %}
+
+        {% if groups.has_next %}
+            <a href="?page={{ groups.next_page_number }}" class="btn btn-default">Next</a>
+            <a href="?page={{ groups.paginator.num_pages }}" class="btn btn-default">Last</a>
+        {% endif %}
+    </span>
+</div>
+
+
+{% endblock %}

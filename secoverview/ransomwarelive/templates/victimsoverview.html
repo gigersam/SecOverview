@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>Victims</h1>
+    <form class="d-flex">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    <table class="table table-hover">
+        <tr>
+            <td>Title</td>
+            <td>Country</td>
+            <td>Description</td>
+            <td>Action</td>
+        </tr>
+        {% for victim in victims %}
+        <tr>
+            <td>{{ victim.post_title }}</td>
+            <td>{{ victim.country }}</td>
+            <td>{{ victim.description }}</td>
+            <td><a href="{% url 'victimview' victim.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="pagination">
+    <span class="step-links">
+
+        <span class="current">
+            Page {{ victims.number }} of {{ victims.paginator.num_pages }}.
+        </span>
+
+        {% if victims.has_previous %}
+            <a href="?page=1" class="btn btn-default">First</a>
+            <a href="?page={{ victims.previous_page_number }}" class="btn btn-default">Previous</a>
+        {% endif %}
+
+        {% if victims.has_next %}
+            <a href="?page={{ victims.next_page_number }}" class="btn btn-default">Next</a>
+            <a href="?page={{ victims.paginator.num_pages }}" class="btn btn-default">Last</a>
+        {% endif %}
+    </span>
+</div>
+
+
+{% endblock %}
