@@ -8,5 +8,5 @@ urlpatterns = [
     path('ransomwarelive/groups/fetch', views.fetch_groups, name='ransomware_fetch_groups'),
     path('ransomwarelive/victims/fetch', views.fetch_victims, name='ransomware_fetch_victims'),
     path('nmap/scan', views.nmap_scan, name='nmap_scan'),
-    path('logout', views.logout_view, name='logout'),
+    path('logout', views.logout_view, name='logout_api'),
 ]
