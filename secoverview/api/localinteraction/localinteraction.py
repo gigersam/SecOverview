@@ -1,5 +1,5 @@
 import requests
-from config import CREDENTIALS
+from .config import CREDENTIALS
 
 def local_api_request(api_url, data):
     token_url = "http://127.0.0.1:8000/api/token"  # Adjust this to match your API
