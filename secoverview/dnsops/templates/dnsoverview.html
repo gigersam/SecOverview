@@ -23,7 +23,18 @@
         {% for record, result in results.items %}
         <tr>
             <td>{{ record }}</td>
-            <td>{% for obj in result %}<p>{{ obj }}</p>{% endfor %}</td>
+            <td>{% for obj in result %}
+                <div class="d-grid gap-4 d-md-flex">
+                    <p>{{ obj }}</p>
+                    {% if record == "A" %}
+                    <form action="{% url 'nmapscan' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" class="form-control" name="ip" id="id_IP" value="{{ obj }}">
+                        <input type="hidden" class="form-control" name="parameters" id="id_parameters" value="-sV -n -R -p 1-1024">
+                        <button type="submit" class="btn btn-dark">Scan with NMAP</button>
+                    </form> {% endif %} {% endfor %}
+                </div>
+            </td>
         </tr>
         {% endfor %}
     </table>
