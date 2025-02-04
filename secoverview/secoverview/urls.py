@@ -25,5 +25,6 @@ urlpatterns = [
     path('ransomwarelive/', include('ransomwarelive.urls')),
     path('nmap/', include('nmapapp.urls')),
     path('dns/', include('dnsops.urls')),
+    path('bgpviewcheck/', include('bgpviewcheck.urls')),
     path('api/', include('api.urls')),
 ]

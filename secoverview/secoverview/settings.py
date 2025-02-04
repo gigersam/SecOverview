@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'ransomwarelive',
     'nmapapp',
     'dnsops',
+    'bgpviewcheck',
 ]
 
 MIDDLEWARE = [

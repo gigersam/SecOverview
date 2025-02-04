@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>IP Check bgpview.io</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label class="me-2" for="id_ip">IP:</label>
+        <input type="text" class="form-control" name="ip" id="id_ip" required><br><br>
+
+        <button type="submit" class="btn btn-dark">Check</button>
+    </form>
+    <br>
+    {% if response != "" %}
+    <h5><b>IP:</b> {{ response.ip }}</h5>
+    <h5><b>PTR Record:</b> {{ response.ptr_record }}</h5>
+    <table class="table table-hover">
+        <tr>
+            <td>Prefix</td>
+            <td>Name</td>
+            <td>Description</td>
+            <td>ASN</td>
+            <td>ASN-Name</td>
+            <td>ASN-Description</td>
+            <td>ASN-Country</td>
+        </tr>
+        {% for prefix in response.prefixes %}
+        <tr>
+            <td>{{ prefix.prefix }}</td>
+            <td>{{ prefix.name }}</td>
+            <td>{{ prefix.description }}</td>
+            <td>{{ prefix.asn.asn }}</td>
+            <td>{{ prefix.asn.name }}</td>
+            <td>{{ prefix.asn.description }}</td>
+            <td>{{ prefix.asn.country_code }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+
+
+
+{% endblock %}
