@@ -12,7 +12,6 @@ def ipcheckbgpview(request):
         ip = request.POST.get('ip')
         response = requests.get(f"https://api.bgpview.io/ip/{ip}")
         response = response.json()
-        print(response['data'])
         return render(
             request,
             'ipcheckbgpview.html',

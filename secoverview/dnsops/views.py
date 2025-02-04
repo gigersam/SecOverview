@@ -18,16 +18,13 @@ def dnsoverview(request):
     if request.method == 'POST':
         domain = request.POST.get('domain')
         results = {}
-        print(domain)
         for record_type in DNSRecord.RECORD_TYPES:
             record_type = record_type[0]
             try:
                 answers = dns.resolver.resolve(domain, record_type)
-                print(answers)
                 results[record_type] = [str(record) for record in answers]
             except:
                 pass
-        print(results)
 
         subdomain_results = {}
         subdomain_results[domain] = results
