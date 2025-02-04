@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'dashboard',
     'ransomwarelive',
     'nmapapp',
+    'dnsops',
 ]
 
 MIDDLEWARE = [

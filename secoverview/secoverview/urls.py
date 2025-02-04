@@ -24,5 +24,6 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('ransomwarelive/', include('ransomwarelive.urls')),
     path('nmap/', include('nmapapp.urls')),
+    path('dns/', include('dnsops.urls')),
     path('api/', include('api.urls')),
 ]
