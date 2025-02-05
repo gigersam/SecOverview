@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist', # Blacklist tokens
 
     # Custom Apps
-    'api',
     'accounts',
+    'api',
     'main',
     'dashboard',
     'ransomwarelive',
