@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from django.core.paginator import Paginator
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from .models import RansomwareliveGroupsGroup, RansomwareliveVictim
 from django.db.models import Q
+from api.localinteraction.localinteraction import local_api_request_get
 
 @login_required
 def ransomwarelive(request):
@@ -22,6 +23,16 @@ def ransomwarelive(request):
             'groups':groups
         }
     )
+
+@login_required
+def ransomwareliveupdate(request):
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    api_url = "http://localhost:8000/api/ransomwarelive/groups/fetch"
+    groups = local_api_request_get(api_url=api_url)
+    api_url = "http://localhost:8000/api/ransomwarelive/victims/fetch"
+    groups = local_api_request_get(api_url=api_url)
+    return redirect(ransomwarelive)
 
 @login_required
 def victimsoverview(request):

@@ -18,3 +18,21 @@ def local_api_request(api_url, data):
     
     except requests.exceptions.RequestException as e:
         return (f"Error obtaining access token: {e}")
+    
+def local_api_request_get(api_url):
+    token_url = "http://127.0.0.1:8000/api/token"  # Adjust this to match your API
+    credentials = CREDENTIALS
+
+    try:
+        # Make the request to get the token
+        response = requests.post(token_url, json=credentials)
+        response.raise_for_status()  # Raise error if request fails
+
+        # Extract access token
+        access_token = response.json().get("access")
+        headers = {"Authorization": f"Bearer {access_token}"}
+        response = requests.get(api_url, headers=headers)
+        return response.json()
+    
+    except requests.exceptions.RequestException as e:
+        return (f"Error obtaining access token: {e}")

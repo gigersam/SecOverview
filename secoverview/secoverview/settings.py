@@ -47,10 +47,10 @@ INSTALLED_APPS = [
     # Custom Apps
     'accounts',
     'api',
+    'nmapapp',
     'main',
     'dashboard',
     'ransomwarelive',
-    'nmapapp',
     'dnsops',
     'bgpviewcheck',
 ]

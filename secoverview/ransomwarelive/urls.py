@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.ransomwarelive, name='ransomwarelive'),
+    path('update/', views.ransomwareliveupdate, name='ransomwareliveupdate'),
     path('victims', views.victimsoverview, name='victimsoverview'),
     path('victims/<int:id>', views.victimview, name='victimview'),
     path('groups', views.groupsoverview, name='groupsoverview'),
