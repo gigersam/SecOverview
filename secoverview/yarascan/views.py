@@ -10,35 +10,35 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-# Define YARA rule (or load from file)
-YARA_RULES = """
-rule MalwareNamedDocument
-{
-    meta:
-        author = "Your Name"
-        description = "Detects document files with 'malware' in the filename"
-        date = "2025-02-10"
-        reference = "Internal Detection Rule"
+# Path to the YARA rules folder
+YARA_RULES_DIR = os.path.join(settings.MEDIA_ROOT, "yararules")
 
-    strings:
-        $doc_magic = {D0 CF 11 E0 A1 B1 1A E1}  // OLE Compound File (Legacy MS Office)
-        $docx_magic = {50 4B 03 04}  // ZIP Header (used in DOCX, XLSX, PPTX)
-        $pdf_magic = {25 50 44 46 2D}  // PDF Header
+def load_yara_rules():
+    """Load and compile all YARA rules from the yara_rules folder."""
+    rule_files = {}
 
-    condition:
-        (any of ($doc_magic, $docx_magic, $pdf_magic))
-        and
-        (filesize < 10MB)  // Optional: Avoid scanning huge files
-}
-"""
+    # Find all .yar files in the directory
+    for file_name in os.listdir(YARA_RULES_DIR):
+        if file_name.endswith(".yar"):
+            rule_path = os.path.join(YARA_RULES_DIR, file_name)
+            rule_files[file_name] = rule_path  # Add to rule dictionary
 
-# Compile YARA rule
-compiled_rules = yara.compile(source=YARA_RULES)
+    # Compile all rules together
+    if rule_files:
+        compiled_rules = yara.compile(filepaths=rule_files)
+        return compiled_rules
+    else:
+        return None
+
+# Load rules at startup
+compiled_rules = load_yara_rules()
 
 def scan_file(file_path):
-    """Scan a file with YARA and return matched rules."""
-    matches = compiled_rules.match(file_path)
-    return matches
+    """Scan a file with compiled YARA rules and return matched rules."""
+    if compiled_rules:
+        matches = compiled_rules.match(file_path)
+        return matches
+    return []
 
 @login_required
 def yara_scan_view(request):
@@ -109,7 +109,7 @@ def yara_scan_overview(request):
         request,
         'yaraoverview.html',
         {
-            'title':'Yara Scan',
+            'title':'Yara Scan Report',
             'year':datetime.now().year,
             "results": page_obj, 
         }
