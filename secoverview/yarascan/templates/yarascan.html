@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="d-grid gap-4 d-md-flex">
+    <h2>Upload a file for YARA scan</h2>
+    <a href="{% url 'yara_scan_overview' %}"><button type="button" class="btn btn-dark">Overview Past Scans</button></a>
+</div>
+
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="input-group">
+        <input type="file" class="form-control" name="file" required>
+        <button type="submit" class="btn btn-dark">Scan</button>
+    </div>
+</form>
+
+<br>
+
+{% if result != "" %}
+<h2>Scan Results for: {{ result.file_name }}</h2>
+<p><strong>UUID:</strong> {{ result.uuid }}</p>
+<p><strong>Stored File Path:</strong> {{ result.stored_file_path }}</p>
+
+<p><strong>Matched Rules:</strong></p>
+{% if matches %}
+    <ul>
+        {% for match in matches %}
+            <li>{{ match }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No threats detected.</p>
+{% endif %}
+{% endif %}
+
+{% endblock %}

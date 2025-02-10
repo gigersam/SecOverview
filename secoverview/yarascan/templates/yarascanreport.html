@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>Scanned File: {{ scans.file_name }}</h1>
+    <p><b>Scan Name-Name: </b>{{ scans.file_name }}</p>
+    <p><b>Scan UUID: </b>{{ scans.uuid }}</p>
+    <p><b>Scan File Path: </b>{{ scans.stored_file_path }}</p>
+    <p><b>Scan Matched Rules: </b>{{ scans.matched_rules }}</p>
+    <p><b>Scan Date: </b>{{ scans.scanned_at }}</p>
+</div>
+
+{% endblock %}

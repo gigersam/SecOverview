@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>Victims</h1>
+    <form class="d-flex">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    <table class="table table-hover">
+        <tr>
+            <td>File-Name</td>
+            <td>Matched Rules</td>
+            <td>Scan Date</td>
+            <td>Action</td>
+        </tr>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.file_name }}</td>
+            <td>{{ result.matched_rules }}</td>
+            <td>{{ result.scanned_at }}</td>
+            <td><a href="{% url 'yarascanreport' result.uuid %}"><button type="button" class="btn btn-dark">View</button></a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="pagination">
+    <span class="step-links">
+
+        <span class="current">
+            Page {{ results.number }} of {{ results.paginator.num_pages }}.
+        </span>
+
+        {% if results.has_previous %}
+            <a href="?page=1" class="btn btn-default">First</a>
+            <a href="?page={{ results.previous_page_number }}" class="btn btn-default">Previous</a>
+        {% endif %}
+
+        {% if results.has_next %}
+            <a href="?page={{ results.next_page_number }}" class="btn btn-default">Next</a>
+            <a href="?page={{ results.paginator.num_pages }}" class="btn btn-default">Last</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

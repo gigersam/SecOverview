@@ -6,3 +6,4 @@ db.sqlite3
 *config.py
 secoverview/api/localinteraction/config.py
 
+media*

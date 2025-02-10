@@ -61,7 +61,7 @@ def scan(request):
         assert isinstance(request, HttpRequest)
         return render(
             request,
-            'scan.html',
+            'nmapscan.html',
             {
                 'title':'NMAP Overview',
                 'year':datetime.now().year,

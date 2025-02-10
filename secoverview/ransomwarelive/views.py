@@ -55,6 +55,7 @@ def victimsoverview(request):
             'victims':page_obj
         }
     )
+
 @login_required
 def victimview(request, id):
     """Renders the about page."""
