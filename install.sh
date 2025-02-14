@@ -32,9 +32,6 @@ fi
 echo "Cloning Django project from GitHub..."
 sudo git clone $GITHUB_REPO $DJANGO_DIR
 
-# Change ownership to the Django user
-sudo chown -R $DJANGO_USER:www-data $DJANGO_DIR
-
 # Navigate to project directory
 cd $DJANGO_DIR
 
@@ -50,21 +47,24 @@ cd $DJANGO_APP_DIR
 
 # Apply migrations
 echo "Applying migrations..."
-sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate"
+source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate
 
 # Create a superuser (optional)
 read -p "Do you want to create a superuser? (y/n): " CREATE_SUPERUSER
 if [[ "$CREATE_SUPERUSER" == "y" ]]; then
-    sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py createsuperuser"
+    source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py createsuperuser
 fi
 
 # Allow all hosts (for local development)
 echo "Configuring Django settings..."
-sudo -u $DJANGO_USER sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = ['*']/" $PROJECT_NAME/settings.py
+sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = ['*']/" $PROJECT_NAME/settings.py
 
 # Collect static files
 echo "Collecting static files..."
-sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py collectstatic --noinput"
+source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py collectstatic --noinput
+
+# Change ownership to the Django user
+sudo chown -R $DJANGO_USER:www-data $DJANGO_DIR
 
 # Create a Gunicorn systemd service file
 echo "Creating $PROJECT_NAME systemd service..."
