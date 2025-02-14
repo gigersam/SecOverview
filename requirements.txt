@@ -17,3 +17,4 @@ sqlparse==0.5.3
 uritemplate==4.1.1
 urllib3==2.3.0
 yara-python==4.5.1
+gunicorn
