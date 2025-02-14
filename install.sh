@@ -42,11 +42,11 @@ cd $DJANGO_DIR
 echo "Setting up a virtual environment..."
 sudo -u $DJANGO_USER python3 -m venv $VENV_NAME
 
-cd $DJANGO_APP_DIR
-
 # Activate virtual environment and install dependencies
 echo "Installing dependencies from requirements.txt..."
 sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && pip install -r requirements.txt"
+
+cd $DJANGO_APP_DIR
 
 # Apply migrations
 echo "Applying migrations..."
@@ -76,7 +76,7 @@ After=network.target
 [Service]
 User=$DJANGO_USER
 Group=www-data
-WorkingDirectory=$DJANGO_DIR
+WorkingDirectory=$DJANGO_APP_DIR
 ExecStart=$DJANGO_DIR/$VENV_NAME/bin/gunicorn --workers 3 --bind unix:$DJANGO_DIR/$PROJECT_NAME.sock $PROJECT_NAME.wsgi:application
 
 [Install]
