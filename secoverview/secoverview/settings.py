@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'dnsops',
     'bgpviewcheck',
     'yarascan',
+    'rssapp',
 ]
 
 MIDDLEWARE = [

@@ -5,7 +5,20 @@
 <div class="p-4">
     <h1>Asset {{ assets.ip_address }}</h1>
     <p><b>Asset Name: </b>{{ assets.name }}</p>
-    <p><b>Asset IP: </b>{{ assets.ip_address }}</p>
+    <div class="d-grid gap-4 d-md-flex">
+        <p><b>Asset IP: </b>{{ assets.ip_address }}</p>
+        <form action="{% url 'nmapscan' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" class="form-control" name="ip" id="id_IP" value="{{ assets.ip_address }}">
+            <input type="hidden" class="form-control" name="parameters" id="id_parameters" value="-sV -n -R -p 1-1024">
+            <button type="submit" class="btn btn-dark">Scan with NMAP</button>
+        </form>
+        <form action="{% url 'ipcheckbgpview' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" class="form-control" name="ip" id="id_IP" value="{{ assets.ip_address }}">
+            <button type="submit" class="btn btn-dark">Check ASN</button>
+        </form>
+    </div>
     <p><b>Asset Disovery Report: </b><a href="{% url 'scanview' assets.added_by_scan.pk %}"><button type="button" class="btn btn-dark">{{ assets.added_by_scan }}</button></a></p>
 </div>
 

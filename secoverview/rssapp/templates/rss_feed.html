@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<br>
+<h1>RSS Feed</h1>
+<form class="d-flex">
+    <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+</form>
+<br>
+<div class="row text-center">
+    {% for item in feed_items %}
+    <hr/>
+    <div class="col">    
+        <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+        <p>{{ item.summary|truncatewords:50 }}</p>
+        <p><strong>Source:</strong> {{ item.source }} <strong>Date:</strong> {{ item.pub_date }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="pagination">
+    <span class="step-links">
+
+        <span class="current">
+            Page {{ feed_items.number }} of {{ feed_items.paginator.num_pages }}.
+        </span>
+
+        {% if feed_items.has_previous %}
+            <a href="?page=1" class="btn btn-default">First</a>
+            <a href="?page={{ feed_items.previous_page_number }}" class="btn btn-default">Previous</a>
+        {% endif %}
+
+        {% if feed_items.has_next %}
+            <a href="?page={{ feed_items.next_page_number }}" class="btn btn-default">Next</a>
+            <a href="?page={{ feed_items.paginator.num_pages }}" class="btn btn-default">Last</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

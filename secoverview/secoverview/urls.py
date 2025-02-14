@@ -31,6 +31,7 @@ urlpatterns = [
     path('bgpviewcheck/', include('bgpviewcheck.urls')),
     path('api/', include('api.urls')),
     path('yara/', include('yarascan.urls')),
+    path('rss/', include('rssapp.urls')),
 ]
 
 #if settings.DEBUG == True:

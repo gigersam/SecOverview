@@ -6,6 +6,7 @@ from datetime import datetime
 from django.db.models import Q
 from .models import Nmapscan, Assets
 from api.localinteraction.localinteraction import local_api_request
+import json
 
 @login_required
 def overview(request):
@@ -33,7 +34,8 @@ def scan(request):
         api_url = "http://localhost:8000/api/nmap/scan"
         data = {"ip": ip, "parameters": parameters}
         json_data = local_api_request(api_url=api_url, data=data)
-        scanconfig = Nmapscan.objects.create(data=json_data, ip=ip, parameters=parameters)
+        json_data_dump = json.dumps(json_data, indent=4)
+        scanconfig = Nmapscan.objects.create(data=json_data_dump, ip=ip, parameters=parameters)
 
         for data_obj in json_data:
             ip_address = data_obj.get("addresses", {}).get("ipv4")
