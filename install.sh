@@ -9,7 +9,7 @@ PROJECT_NAME="secoverview"
 VENV_NAME="venv"
 DJANGO_PORT=8000
 DJANGO_USER="secoverview"
-DJANGO_DIR="/home/$DJANGO_USER/$PROJECT_NAME"
+DJANGO_DIR="/home/$DJANGO_USER/$PROJECT_NAME" 
 DJANGO_APP_DIR = "/home/$DJANGO_USER/$PROJECT_NAME/$PROJECT_NAME"
 
 # Update system packages
@@ -32,39 +32,39 @@ fi
 echo "Cloning Django project from GitHub..."
 sudo git clone $GITHUB_REPO $DJANGO_DIR
 
+# Change ownership to the Django user
+sudo chown -R $DJANGO_USER:www-data $DJANGO_DIR
+
 # Navigate to project directory
 cd $DJANGO_DIR
 
 # Set up a virtual environment
 echo "Setting up a virtual environment..."
-sudo python3 -m venv $VENV_NAME
+sudo -u $DJANGO_USER python3 -m venv $VENV_NAME
 
 # Activate virtual environment and install dependencies
 echo "Installing dependencies from requirements.txt..."
-sudo bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && pip install -r requirements.txt"
+sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && pip install -r requirements.txt"
 
 cd $DJANGO_APP_DIR
 
 # Apply migrations
 echo "Applying migrations..."
-sudo bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate"
+sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate"
 
 # Create a superuser (optional)
 read -p "Do you want to create a superuser? (y/n): " CREATE_SUPERUSER
 if [[ "$CREATE_SUPERUSER" == "y" ]]; then
-    sudo bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py createsuperuser"
+    sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py createsuperuser"
 fi
 
 # Allow all hosts (for local development)
 echo "Configuring Django settings..."
-sudo sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = ['*']/" $PROJECT_NAME/settings.py
+sudo -u $DJANGO_USER sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = ['*']/" $PROJECT_NAME/settings.py
 
 # Collect static files
 echo "Collecting static files..."
-sudo bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py collectstatic --noinput"
-
-# Change ownership to the Django user
-sudo chown -R $DJANGO_USER:www-data $DJANGO_DIR
+sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py collectstatic --noinput"
 
 # Create a Gunicorn systemd service file
 echo "Creating $PROJECT_NAME systemd service..."
