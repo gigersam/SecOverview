@@ -10,6 +10,7 @@ VENV_NAME="venv"
 DJANGO_PORT=8000
 DJANGO_USER="secoverview"
 DJANGO_DIR="/home/$USER/$PROJECT_NAME"
+DJANGO_APP_DIR = "/home/$USER/$PROJECT_NAME/$PROJECT_NAME"
 
 # Update system packages
 echo "Updating system packages..."
@@ -17,14 +18,14 @@ sudo apt update && sudo apt upgrade -y
 
 # Install necessary dependencies
 echo "Installing Python, pip, virtual environment, Git, and other dependencies..."
-sudo apt install -y python3 python3-venv python3-pip git nginx
+sudo apt install -y python3 python3-venv python3-pip git nginx nmap
 
 # Create a new system user for Django
 if id "$DJANGO_USER" &>/dev/null; then
     echo "User $DJANGO_USER already exists."
 else
     echo "Creating Django user..."
-    sudo adduser --system --no-create-home --group $DJANGO_USER
+    sudo adduser --system --group $DJANGO_USER
 fi
 
 # Clone the Django project from GitHub
@@ -41,18 +42,20 @@ cd $DJANGO_DIR
 echo "Setting up a virtual environment..."
 sudo -u $DJANGO_USER python3 -m venv $VENV_NAME
 
+cd $DJANGO_APP_DIR
+
 # Activate virtual environment and install dependencies
 echo "Installing dependencies from requirements.txt..."
-sudo -u $DJANGO_USER bash -c "source $VENV_NAME/bin/activate && pip install -r requirements.txt"
+sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && pip install -r requirements.txt"
 
 # Apply migrations
 echo "Applying migrations..."
-sudo -u $DJANGO_USER bash -c "source $VENV_NAME/bin/activate && python manage.py migrate"
+sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate"
 
 # Create a superuser (optional)
 read -p "Do you want to create a superuser? (y/n): " CREATE_SUPERUSER
 if [[ "$CREATE_SUPERUSER" == "y" ]]; then
-    sudo -u $DJANGO_USER bash -c "source $VENV_NAME/bin/activate && python manage.py createsuperuser"
+    sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py createsuperuser"
 fi
 
 # Allow all hosts (for local development)
@@ -61,7 +64,7 @@ sudo -u $DJANGO_USER sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = ['*']/" $PRO
 
 # Collect static files
 echo "Collecting static files..."
-sudo -u $DJANGO_USER bash -c "source $VENV_NAME/bin/activate && python manage.py collectstatic --noinput"
+sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py collectstatic --noinput"
 
 # Create a Gunicorn systemd service file
 echo "Creating $PROJECT_NAME systemd service..."
