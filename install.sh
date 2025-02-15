@@ -14,7 +14,7 @@ DJANGO_USER="secoverview"
 DJANGO_DIR="/home/$DJANGO_USER/$PROJECT_NAME" 
 DJANGO_APP_DIR="/home/$DJANGO_USER/$PROJECT_NAME/$PROJECT_NAME"
 DJANGO_ADMIN_PASSWORD=$(tr -dc 'A-Za-z0-9!@#$%^&*()_+' < /dev/urandom | head -c 12)
-$DJANGO_SECRET_KEY=$(tr -dc 'A-Za-z0-9!@#$%^&*()_+' < /dev/urandom | head -c 48)
+DJANGO_SECRET_KEY=$(tr -dc 'A-Za-z0-9!@#$%^&*()_+' < /dev/urandom | head -c 48)
 
 # Update system packages
 echo "Updating system packages..."
