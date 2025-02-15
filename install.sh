@@ -4,13 +4,16 @@
 # Version: 1.0
 # Description: Installation and Start of the SecOverview App
 
+# api localinteraction config.py creation
+# media dir creation
+
 GITHUB_REPO="https://github.com/gigersam/SecOverview.git"  # Change this to your repo
 PROJECT_NAME="secoverview"
 VENV_NAME="venv"
 DJANGO_PORT=8000
 DJANGO_USER="secoverview"
 DJANGO_DIR="/home/$DJANGO_USER/$PROJECT_NAME" 
-DJANGO_APP_DIR = "/home/$DJANGO_USER/$PROJECT_NAME/$PROJECT_NAME"
+DJANGO_APP_DIR="/home/$DJANGO_USER/$PROJECT_NAME/$PROJECT_NAME"
 
 # Update system packages
 echo "Updating system packages..."
@@ -45,15 +48,22 @@ sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && pip 
 
 cd $DJANGO_APP_DIR
 
+DJANGO_ADMIN_PASSWORD=$(tr -dc 'A-Za-z0-9!@#$%^&*()_+' < /dev/urandom | head -c 12)
+
+cat << EOF > api/localinteraction/config.py
+CREDENTIALS = {
+    "username": "admin",
+    "password": "$DJANGO_ADMIN_PASSWORD"
+}
+EOF
+
 # Apply migrations
 echo "Applying migrations..."
 source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate
 
 # Create a superuser (optional)
-read -p "Do you want to create a superuser? (y/n): " CREATE_SUPERUSER
-if [[ "$CREATE_SUPERUSER" == "y" ]]; then
-    source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py createsuperuser
-fi
+source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py createsuperuser
+
 
 # Allow all hosts (for local development)
 echo "Configuring Django settings..."
