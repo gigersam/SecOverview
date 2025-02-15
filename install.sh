@@ -10,10 +10,10 @@
 GITHUB_REPO="https://github.com/gigersam/SecOverview.git"  # Change this to your repo
 PROJECT_NAME="secoverview"
 VENV_NAME="venv"
-DJANGO_PORT=8000
 DJANGO_USER="secoverview"
 DJANGO_DIR="/home/$DJANGO_USER/$PROJECT_NAME" 
 DJANGO_APP_DIR="/home/$DJANGO_USER/$PROJECT_NAME/$PROJECT_NAME"
+DJANGO_ADMIN_PASSWORD=$(tr -dc 'A-Za-z0-9!@#$%^&*()_+' < /dev/urandom | head -c 12)
 
 # Update system packages
 echo "Updating system packages..."
@@ -48,7 +48,9 @@ sudo -u $DJANGO_USER bash -c "source $DJANGO_DIR/$VENV_NAME/bin/activate && pip 
 
 cd $DJANGO_APP_DIR
 
-DJANGO_ADMIN_PASSWORD=$(tr -dc 'A-Za-z0-9!@#$%^&*()_+' < /dev/urandom | head -c 12)
+mkdir media
+mkdir media/scans
+mkdir media/yararules
 
 cat << EOF > api/localinteraction/config.py
 CREDENTIALS = {
@@ -62,12 +64,20 @@ echo "Applying migrations..."
 source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate
 
 # Create a superuser (optional)
-source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py createsuperuser
+export DJANGO_SUPERUSER_USERNAME=admin
+export DJANGO_SUPERUSER_PASSWORD=$DJANGO_ADMIN_PASSWORD
+export DJANGO_SUPERUSER_EMAIL="admin@admin.test"
 
+source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py createsuperuser --noinput
+
+unset DJANGO_SUPERUSER_USERNAME
+unset DJANGO_SUPERUSER_PASSWORD
+unset DJANGO_SUPERUSER_EMAIL
 
 # Allow all hosts (for local development)
 echo "Configuring Django settings..."
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = ['*']/" $PROJECT_NAME/settings.py
+sed -i "s/DEBUG = TRUE/DEBUG = FALSE/" $PROJECT_NAME/settings.py
 
 # Collect static files
 echo "Collecting static files..."
@@ -112,11 +122,11 @@ server {
     }
 
     location /static/ {
-        alias $DJANGO_DIR/static/;
+        alias $DJANGO_APP_DIR/staticfiles/;
     }
 
     location /media/ {
-        alias $DJANGO_DIR/media/;
+        alias $DJANGO_APP_DIR/media/;
     }
 }
 EOF
@@ -133,3 +143,7 @@ sudo systemctl enable nginx
 # Final message
 echo "Django + Gunicorn + Nginx setup completed!"
 echo "Visit your app at http://<your-server-ip>/"
+
+echo "Admin Account:"
+echo "Username: admin"
+echo "Password: $DJANGO_ADMIN_PASSWORD"

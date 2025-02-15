@@ -8,3 +8,5 @@ secoverview/api/localinteraction/config.py
 
 media*
 exclude
+
+staticfiles
