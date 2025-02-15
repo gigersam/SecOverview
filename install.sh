@@ -14,6 +14,7 @@ DJANGO_USER="secoverview"
 DJANGO_DIR="/home/$DJANGO_USER/$PROJECT_NAME" 
 DJANGO_APP_DIR="/home/$DJANGO_USER/$PROJECT_NAME/$PROJECT_NAME"
 DJANGO_ADMIN_PASSWORD=$(tr -dc 'A-Za-z0-9!@#$%^&*()_+' < /dev/urandom | head -c 12)
+$DJANGO_SECRET_KEY=$(tr -dc 'A-Za-z0-9!@#$%^&*()_+' < /dev/urandom | head -c 48)
 
 # Update system packages
 echo "Updating system packages..."
@@ -77,7 +78,7 @@ unset DJANGO_SUPERUSER_EMAIL
 # Allow all hosts (for local development)
 echo "Configuring Django settings..."
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = ['*']/" $PROJECT_NAME/settings.py
-sed -i "s/DEBUG = TRUE/DEBUG = FALSE/" $PROJECT_NAME/settings.py
+sed -i "s/SECRET_KEY = 'SECRET_KEY'/SECRET_KEY = '$DJANGO_SECRET_KEY'/" $PROJECT_NAME/settings.py
 
 # Collect static files
 echo "Collecting static files..."
