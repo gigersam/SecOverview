@@ -29,7 +29,7 @@ if id "$DJANGO_USER" &>/dev/null; then
     echo "User $DJANGO_USER already exists."
 else
     echo "Creating Django user..."
-    sudo adduser -m -d /home/$DJANGO_USER -s /bin/bash $DJANGO_USER
+    sudo useradd -m -s /bin/bash $DJANGO_USER
 fi
 
 # Clone the Django project from GitHub
