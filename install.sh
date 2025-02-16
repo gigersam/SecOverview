@@ -78,7 +78,7 @@ unset DJANGO_SUPERUSER_EMAIL
 # Allow all hosts (for local development)
 echo "Configuring Django settings..."
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = ['*']/" $PROJECT_NAME/settings.py
-sed -i "s/SECRET_KEY = 'SECRET_KEY'/SECRET_KEY = '$DJANGO_SECRET_KEY'/" $PROJECT_NAME/settings.py
+sed -i "s/SECRET_KEY = 'SECRET_KEY'/SECRET_KEY = '${DJANGO_SECRET_KEY}'/" $PROJECT_NAME/settings.py
 
 # Collect static files
 echo "Collecting static files..."
