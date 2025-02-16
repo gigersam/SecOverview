@@ -4,6 +4,76 @@
 
 <div class="p-4">
     <h1>DASHBOARD</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3>Latest NMAP Scans</h3>
+                <table class="table table-hover">
+                    <tr>
+                        <td>Scan Date</td>
+                        <td>IP-Range</td>
+                        <td>Parameters</td>
+                    </tr>
+                    {% for scan in scans %}
+                    <tr>
+                        <td>{{ scan.created_at }}</td>
+                        <td>{{ scan.ip }}</td>
+                        <td>{{ scan.parameters }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <a href="{% url 'nmapoverview' %}"><button type="button" class="btn btn-dark">Overview NMAP</button></a>
+            </div>
+            <div class="col">
+                <h3>Ransomware Victims</h3>
+                <table class="table table-hover">
+                    <tr>
+                        <td>Name</td>
+                        <td>Country</td>
+                    </tr>
+                    {% for victim in victims %}
+                    <tr>
+                        <td>{{ victim.post_title }}</td>
+                        <td>{{ victim.country }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <a href="{% url 'ransomwarelive' %}"><button type="button" class="btn btn-dark">Overview Ransomwarelive Data</button></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h3>Latest Positiv File-Check</h3>
+                <table class="table table-hover">
+                    <tr>
+                        <td>File-Name</td>
+                        <td>Matched Rules</td>
+                        <td>Scan Date</td>
+                    </tr>
+                    {% for result in filescanresults %}
+                    <tr>
+                        <td>{{ result.file_name }}</td>
+                        <td>{{ result.matched_rules }}</td>
+                        <td>{{ result.scanned_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <a href="{% url 'yara_scan_view' %}"><button type="button" class="btn btn-dark">Overview Scanned Files</button></a>
+            </div>
+        </div>
+        <hr>
+        <div>
+            <h3>Latest News</h3>
+            {% for item in feed_items %}
+            <hr/>
+            <div class="col">    
+                <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+                <p>{{ item.summary|truncatewords:50 }}</p>
+                <p><strong>Source:</strong> {{ item.source }} <strong>Date:</strong> {{ item.pub_date }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}

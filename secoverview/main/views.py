@@ -15,3 +15,16 @@ def index(request):
             'year':datetime.now().year,
         }
     )
+
+@login_required
+def about(request):
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'about.html',
+        {
+            'title':'About',
+            'year':datetime.now().year,
+        }
+    )
