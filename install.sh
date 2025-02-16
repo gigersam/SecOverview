@@ -65,6 +65,7 @@ EOF
 
 # Apply migrations
 echo "Applying migrations..."
+source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py makemigrations
 source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate
 
 # Create a superuser (optional)
