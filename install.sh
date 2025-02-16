@@ -36,6 +36,9 @@ fi
 echo "Cloning Django project from GitHub..."
 sudo git clone $GITHUB_REPO $DJANGO_DIR
 
+# Change ownership to the Django user
+sudo chown -R $DJANGO_USER:www-data $DJANGO_DIR
+
 # Navigate to project directory
 cd $DJANGO_DIR
 
