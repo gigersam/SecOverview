@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <!-- CSRF Token -->
+    <form method="post" style="display: none;">
+        {% csrf_token %}
+    </form>
+
+    <!-- Chat Box -->
+    <div id="chat-container">
+        <div id="chat-header">Ollama Chat</div>
+        <div id="chat-box">
+            {% for msg in messages %}
+                <p><b>You:</b> {{ msg.user_input }}</p>
+                <p><b>Ollama:</b> {{ msg.model_response }}</p>
+            {% endfor %}
+        </div>
+        <div id="chat-input-container">
+            <input type="text" id="user_input" placeholder="Type your message">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const chatBox = document.getElementById("chat-box");
+            const userInput = document.getElementById("user_input");
+            const sendBtn = document.getElementById("send-btn");
+
+            function getCSRFToken() {
+                return document.querySelector("[name=csrfmiddlewaretoken]").value;
+            }
+
+            async function sendMessage() {
+                let userInputValue = userInput.value.trim();
+                if (userInputValue === "") return;
+
+                // Ensure chatBox is found before using it
+                if (!chatBox) {
+                    console.error("Chat box not found!");
+                    return;
+                }
+
+                chatBox.innerHTML += `<p><b>You:</b> ${userInputValue}</p>`;
+
+                const response = await fetch("", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": getCSRFToken()
+                    },
+                    body: new URLSearchParams({ "user_input": userInputValue })
+                });
+
+                const data = await response.json();
+                chatBox.innerHTML += `<p><b>Ollama:</b> ${data.response}</p>`;
+
+                userInput.value = "";
+                chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
+            }
+
+            sendBtn.addEventListener("click", sendMessage);
+            userInput.addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

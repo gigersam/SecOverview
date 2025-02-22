@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('yara/', include('yarascan.urls')),
     path('rss/', include('rssapp.urls')),
+    path('chat/', include('chat.urls')),
 ]
 
 #if settings.DEBUG == True:
