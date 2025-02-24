@@ -66,6 +66,31 @@
     {% block content %}
         
     {% endblock %}
+
+    {% if user.is_authenticated and chatnotavailable != True %}
+    <!-- CSRF Token -->
+    <form method="post" style="display: none;">
+        {% csrf_token %}
+    </form>
+
+    <div>
+        <div id="chat-container" style="display: none;">
+            <br>
+            <div id="chat-box">
+                <p><b>Ollama:</b> Hello! How can I assist you?</p>
+            </div>
+            <div id="chat-input-container">
+                <input type="text" class="form-control" id="user_input" placeholder="Type your message" aria-describedby="send-btn">
+                <button class="btn btn-dark" id="send-btn">Send</button>
+            </div>
+        </div>
+        <!-- Expand Button (Appears When Chat is Hidden) -->
+        <button id="expand-btn" onclick="toggleChat()">Chat</button>
+    </div>
+
+    {% load static %}
+    <script src="{% static "javascript/chat.js" %}"></script>
+    {% endif %}
         <hr/>
         <footer>
             <p>&copy; {{ year }} - Samuel Giger</p>

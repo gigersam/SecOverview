@@ -68,6 +68,7 @@ def chatpage(request):
         {
             'title':'Chat',
             'year':datetime.now().year,
-            'messages':messages
+            'messages':messages,
+            'chatnotavailable':True
         }
     )
