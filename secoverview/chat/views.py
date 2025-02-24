@@ -6,7 +6,7 @@ from .models import ChatMessage
 import requests
 import json
 
-OLLAMA_URL = "http://localhost:11434/api/generate"  # Adjust if needed
+OLLAMA_URL = "http://localhost:11434/api/chat"  # Adjust if needed
 OLLAMA_MODEL = "deepseek-r1:8b"  # Change to your model name
 
 @login_required
@@ -18,18 +18,46 @@ def chatpage(request):
         print(user_input)
         
         # Send request to Ollama
-        payload = {"model": OLLAMA_MODEL, "prompt": user_input}
-        response = requests.post(OLLAMA_URL, json=payload)
+        payload = {
+            "model": OLLAMA_MODEL,
+            "messages": [{"role": "user", "content": user_input}]
+        }
+        
+        headers = {"Content-Type": "application/json"}
+        
+        response = requests.post(OLLAMA_URL, data=json.dumps(payload), headers=headers)
         
         print(response.content)
 
         if response.status_code == 200:
-            model_response = response.json().get("response", "Error: No response from model")
-            
-            # Save to database
-            chat = ChatMessage.objects.create(user_input=user_input, model_response=model_response)
+            #response_content = json.loads(response.content.decode("utf-8"))
+            model_response = response.content.decode("utf-8")
+            model_response_fomated = model_response.replace("\n", ",\n")
+            json_format = ("[" + model_response_fomated + "]").replace(",\n]", "]")
+            print(json_format)
+            response_content = json.loads(json_format)
+            #print(model_response)
+            #model_response_fomated = model_response.replace("\n", ",\n")
+            #json_model_response = []
+            #for input in model_response:
+            #    json_model_response += input
+            #
+            #json_model_response = json_model_response.json()
+            #print(json_model_response)
+            print(response_content)
+            response_string = ""
+            for item in response_content:
+                response_string += str(item.get("message", {}).get("content", ""))
+            json_response = {
+                "model": response_content[0].get("model", ""),
+                "message": response_string,
+                "tokens_used": response_content[-1].get("eval_tokens", 0)
+            }
 
-            return JsonResponse({"response": model_response})
+            # Save to database
+            chat = ChatMessage.objects.create(user_input=user_input, model_response=json_response)
+
+            return JsonResponse({"response": json_response})
         else:
             return JsonResponse({"response": "Error communicating with model"}, status=500)
     

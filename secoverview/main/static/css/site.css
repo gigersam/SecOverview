@@ -84,6 +84,111 @@ pre {
     justify-content: space-between;
 }
 
+/* Button to toggle input field */
+#expand-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #000000;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+#expand-btn:hover {
+    background: #4b4b4b;
+}
+#chat-container {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    width: 300px;
+    max-width: 400px; /* Prevents it from being too large */
+    height: 400px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    transition: transform 0.3s ease-in-out, opacity 0.3s;
+}
+#chat-box {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: 300px;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #ccc #f9f9f9;
+}
+#chat-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+#chat-box::-webkit-scrollbar-track {
+    background: #f9f9f9;
+}
+
+#chat-box::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+#chat-box-full{
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: 600px;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #ccc #f9f9f9;
+}
+#chat-box-full::-webkit-scrollbar {
+    width: 8px;
+}
+
+#chat-box-full::-webkit-scrollbar-track {
+    background: #f9f9f9;
+}
+
+#chat-box-full::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+#chat-input-container {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    width: 300px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    flex-direction: column;
+}
+/* Chat input field */
+#user_input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+/* Send button */
+#send-btn {
+    background: #000000;
+    color: white;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+}
+#send-btn:hover {
+    background: #4b4b4b;
+}
+
 /*.jumbotron {
     background-image: url("/static/app/pictures/index_Skate.JPG");
     background-size: cover;

@@ -8,17 +8,17 @@
     </form>
 
     <!-- Chat Box -->
-    <div id="chat-container">
+    <div id="chat-page">
         <div id="chat-header">Ollama Chat</div>
-        <div id="chat-box">
+        <div id="chat-box-full">
             {% for msg in messages %}
                 <p><b>You:</b> {{ msg.user_input }}</p>
-                <p><b>Ollama:</b> {{ msg.model_response }}</p>
+                <p><b>{{ msg.model_response.model }}:</b> {{ msg.model_response }}</p>
             {% endfor %}
         </div>
-        <div id="chat-input-container">
-            <input type="text" id="user_input" placeholder="Type your message">
-            <button id="send-btn">Send</button>
+        <div id="input-group mb-3">
+            <input type="text" class="form-control" id="user_input" placeholder="Type your message" aria-describedby="send-btn">
+            <button class="btn btn-dark" id="send-btn">Send</button>
         </div>
     </div>
 
@@ -54,7 +54,7 @@
                 });
 
                 const data = await response.json();
-                chatBox.innerHTML += `<p><b>Ollama:</b> ${data.response}</p>`;
+                chatBox.innerHTML += `<p><b>${data.response.model}:</b> {'model': '${data.response.model}', 'message': '${data.response.message}', 'tokens_used': ${data.response.token_used}}</p>`;
 
                 userInput.value = "";
                 chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
