@@ -88,6 +88,11 @@
         <button id="expand-btn" onclick="toggleChat()">Chat</button>
     </div>
 
+    {% if chatcontext %}
+      <script type='text/javascript' > 
+          var context = "This Site contains following information: {{ chatcontext|escapejs }}";
+      </script>
+    {% endif %}
     {% load static %}
     <script src="{% static "javascript/chat.js" %}"></script>
     {% endif %}

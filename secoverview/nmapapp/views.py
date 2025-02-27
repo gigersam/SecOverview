@@ -21,7 +21,8 @@ def overview(request):
             'title':'NMAP Overview',
             'year':datetime.now().year,
             'assets':assets,
-            'scans':scans
+            'scans':scans,
+            'chatcontext':"Shows Assets form the NMAP scans aswell as the nmap scans witch where run." 
         }
     )
 
@@ -54,7 +55,8 @@ def scan(request):
                 'title':'NMAP Overview',
                 'year':datetime.now().year,
                 'assets':assets,
-                'scans':scans
+                'scans':scans,
+                'chatcontext':"Shows Assets form the NMAP scans aswell as the nmap scans witch where run." 
             }
         )
 
@@ -67,6 +69,8 @@ def scan(request):
             {
                 'title':'NMAP Overview',
                 'year':datetime.now().year,
+                'chatcontext':"Shows a form with the input options IP/IP-Range aswell as the Parameters for a NMAP Scan. Parameters dont require nmap in the beginning."
+
             }
     )
 
@@ -105,7 +109,8 @@ def scanview(request, id):
         {
             'title':'NMAP Scans View',
             'year':datetime.now().year,
-            'scans':scans
+            'scans':scans,
+            'chatcontext':"Report about a NMAP Scan. Displayed Scan-Date, Target(-Range) and Scan-Parameters." + "The following scan arameters where used: " + scans.parameters + ". The NMAP Scan Result is: " + scans.data
         }
     )
 

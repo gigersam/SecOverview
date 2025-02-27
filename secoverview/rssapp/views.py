@@ -7,6 +7,7 @@ from django.db.models import Q
 import requests
 import re
 import xml.etree.ElementTree as ET
+import json
 
 
 def fetch_rss_feed(query):
@@ -46,4 +47,10 @@ def rss_feed_view(request):
     page_number = request.GET.get('page')  # Get the page number from the URL query parameter
     page_obj = paginator.get_page(page_number)  # Get the appropriate page of blog posts
 
-    return render(request, "rss_feed.html", {"feed_items": page_obj})
+    return render(
+        request, 
+        "rss_feed.html", 
+        {
+            "feed_items": page_obj,
+            'chatcontext':"This page shows RSS-Feeds. Feeds-Data: " + str(page_obj.object_list)
+        })

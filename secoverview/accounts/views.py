@@ -16,7 +16,7 @@ def login_view(request):
             messages.error(request, "Invalid username or password.")
             return redirect('login')
 
-    return render(request, 'login.html', {})
+    return render(request, 'login.html', {'chatnotavailable':True})
 
 def logout_view(request):
     logout(request)
@@ -34,4 +34,4 @@ def register_view(request):
     else:
         form = RegistrationForm()
 
-    return render(request, 'accounts/register.html', {'form': form})
+    return render(request, 'accounts/register.html', {'form': form, 'chatnotavailable':True})

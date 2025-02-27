@@ -24,7 +24,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const chatBox = document.getElementById("chat-box");
+            const chatBox = document.getElementById("chat-box-full");
             const userInput = document.getElementById("user_input");
             const sendBtn = document.getElementById("send-btn");
 
@@ -54,7 +54,25 @@
                 });
 
                 const data = await response.json();
-                chatBox.innerHTML += `<p><b>${data.response.model}:</b> {'model': '${data.response.model}', 'message': '${data.response.message}', 'tokens_used': ${data.response.token_used}}</p>`;
+                const accordionid = makeid(8)
+                chatBox.innerHTML += `
+                <p>
+                    <b>${data.response.model}:</b> 
+                    <div class="accordion" id="accordionchatthinking">
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="heading${accordionid}">
+                                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${accordionid}" aria-expanded="false" aria-controls="collapse${accordionid}">
+                              Thinking
+                            </button>
+                          </h2>
+                          <div id="collapse${accordionid}" class="accordion-collapse collapse" aria-labelledby="heading${accordionid}" data-bs-parent="#accordionchatthinking">
+                            <div class="accordion-body">
+                              ${data.response.message.substring(data.response.message.indexOf("<think>") + 7, data.response.message.lastIndexOf("</think>"))}
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <br> ${data.response.message.split("</think>\n\n")[1]}</p>`;
 
                 userInput.value = "";
                 chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
@@ -68,6 +86,18 @@
                 }
             });
         });
+
+        function makeid(length) {
+            let result = '';
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const charactersLength = characters.length;
+            let counter = 0;
+            while (counter < length) {
+              result += characters.charAt(Math.floor(Math.random() * charactersLength));
+              counter += 1;
+            }
+            return result;
+        }
     </script>
 
 {% endblock %}

@@ -18,7 +18,8 @@ def ipcheckbgpview(request):
             {
                 'title':'IP Check bgpview',
                 'year':datetime.now().year,
-                'response':response['data']
+                'response':response['data'],
+                'chatcontext':"This page is a bgp/asn check. Input allowed IP-Address. The following Data was returned: " + str(response['data']) 
             }
         )
     else:
@@ -28,6 +29,7 @@ def ipcheckbgpview(request):
             {
                 'title':'IP Check bgpview',
                 'year':datetime.now().year,
-                'response':""
+                'response':"",
+                'chatcontext':"This page is a bgp/asn check. Input allowed IP-Address."
             }
         )

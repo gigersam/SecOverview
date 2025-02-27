@@ -24,6 +24,7 @@ def dashboard(request):
             'scans':scans,
             'victims':victims,
             'feed_items':feed_items,
-            'filescanresults':filescanresults
+            'filescanresults':filescanresults,
+            'chatcontext':"This page is the dashboard conatining the latest nmap scans, ransomware victimes, yara scans and news."
         }
     )

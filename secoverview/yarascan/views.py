@@ -79,7 +79,8 @@ def yara_scan_view(request):
                 'title':'Yara Scan',
                 'year':datetime.now().year,
                 "result": result, 
-                "matches": matches
+                "matches": matches,
+                'chatcontext':"Yara Scanner to check files against yara rules. Latest Scan Result: " + result.file_name + "," + result.stored_file_path + "," + str(result.uuid) + ". Scan Matches: " + str(matches)
             }
         )
 
@@ -90,7 +91,8 @@ def yara_scan_view(request):
             'title':'Yara Scan',
             'year':datetime.now().year,
             "result": "", 
-            "matches": ""
+            "matches": "",
+            'chatcontext':"Yara Scanner to check files against yara rules." 
         }
     )
     
@@ -127,5 +129,6 @@ def yarascanreport(request, uuid):
             'title':'Yara Scan Report',
             'year':datetime.now().year,
             'scans':scans,
+            'chatcontext':"Yara Scanner to check files against yara rules. Latest Scan Result: " + scans.file_name + "," + scans.stored_file_path + "," + str(scans.uuid) + ". Scan Matches: " + str(scans.matched_rules)
         }
     )
