@@ -22,7 +22,10 @@ sudo apt update && sudo apt upgrade -y
 
 # Install necessary dependencies
 echo "Installing Python, pip, virtual environment, Git, and other dependencies..."
-sudo apt install -y python3 python3-venv python3-pip git nginx nmap
+sudo apt install -y python3 python3-venv python3-pip git nginx nmap ollama
+
+echo "Pulling deepseek-r1 model for ollama"
+sudo ollama pull deepseek-r1
 
 # Create a new system user for Django
 if id "$DJANGO_USER" &>/dev/null; then
@@ -55,6 +58,7 @@ cd $DJANGO_APP_DIR
 mkdir media
 mkdir media/scans
 mkdir media/yararules
+mkdir media/chat_Data_StoragePool
 
 cat << EOF > api/localinteraction/config.py
 CREDENTIALS = {
@@ -65,7 +69,7 @@ EOF
 
 # Apply migrations
 echo "Applying migrations..."
-source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py makemigrations accounts api nmapapp main dashboard ransomwarelive dnsops bgpviewcheck yarascan rssapp 
+source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py makemigrations accounts api nmapapp main dashboard ransomwarelive dnsops bgpviewcheck yarascan rssapp chat 
 source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate
 
 # Create a superuser (optional)
@@ -128,10 +132,6 @@ server {
 
     location /static/ {
         alias $DJANGO_APP_DIR/staticfiles/;
-    }
-
-    location /media/ {
-        alias $DJANGO_APP_DIR/media/;
     }
 }
 EOF
