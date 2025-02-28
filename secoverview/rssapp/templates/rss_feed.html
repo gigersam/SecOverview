@@ -19,23 +19,55 @@
     {% endfor %}
 </div>
 
-<div class="pagination">
-    <span class="step-links">
+<ul class="pagination">
+    {% if feed_items.has_previous %}
+    <li class="page-item">
+        <a class="page-link" href="?page=1">First</a>
+      </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ feed_items.previous_page_number }}">Previous</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="?page=1" tabindex="-1">First</a>
+      </li>
+    <li class="page-item disabled">
+      <a class="page-link" href="?page=1" tabindex="-1">Previous</a>
+    </li>
+    {% endif %}
 
-        <span class="current">
-            Page {{ feed_items.number }} of {{ feed_items.paginator.num_pages }}.
-        </span>
+    {% if feed_items.number == 1 %}
+    <li class="page-item active"><a class="page-link" href="?page=1">1</a></li>
+    <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
+    <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
+    {% elif feed_items.number == feed_items.paginator.num_pages %}
+    <li class="page-item"><a class="page-link" href="?page={{ feed_items.previous_page_number|add:'-5' }}">{{ feed_items.previous_page_number|add:"-1" }}</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ feed_items.previous_page_number  }}">{{ feed_items.previous_page_number }}</a></li>
+    <li class="page-item active"><a class="page-link" href="?page={{ feed_items.number }}">{{ feed_items.number }} </a></li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="?page={{ feed_items.previous_page_number }}">{{ feed_items.previous_page_number }}</a></li>
+    <li class="page-item active">
+      <a class="page-link" href="?page={{ feed_items.number }}">{{ feed_items.number }}</a>
+    </li>
+    <li class="page-item"><a class="page-link" href="?page={{ feed_items.next_page_number }}">{{ feed_items.next_page_number }}</a></li>
+    {% endif %}
 
-        {% if feed_items.has_previous %}
-            <a href="?page=1" class="btn btn-default">First</a>
-            <a href="?page={{ feed_items.previous_page_number }}" class="btn btn-default">Previous</a>
-        {% endif %}
+    {% if feed_items.has_next %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ feed_items.next_page_number }}">Next</a>
+      </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ feed_items.paginator.num_pages }}">Last</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="?page={{ feed_items.paginator.num_pages }}">Next</a>
+      </li>
+    <li class="page-item disabled">
+      <a class="page-link" href="?page={{ feed_items.paginator.num_pages }}">Last</a>
+    </li>
+    {% endif %}
+</ul>
 
-        {% if feed_items.has_next %}
-            <a href="?page={{ feed_items.next_page_number }}" class="btn btn-default">Next</a>
-            <a href="?page={{ feed_items.paginator.num_pages }}" class="btn btn-default">Last</a>
-        {% endif %}
-    </span>
-</div>
 
 {% endblock %}

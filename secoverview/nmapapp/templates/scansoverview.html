@@ -26,24 +26,56 @@
     </table>
 </div>
 
-<div class="pagination">
-    <span class="step-links">
+<ul class="pagination">
+    {% if scans.has_previous %}
+    <li class="page-item">
+        <a class="page-link" href="?page=1">First</a>
+      </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ scans.previous_page_number }}">Previous</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="?page=1" tabindex="-1">First</a>
+      </li>
+    <li class="page-item disabled">
+      <a class="page-link" href="?page=1" tabindex="-1">Previous</a>
+    </li>
+    {% endif %}
 
-        <span class="current">
-            Page {{ scans.number }} of {{ scans.paginator.num_pages }}.
-        </span>
+    {% if scans.number == 1 %}
+    <li class="page-item active"><a class="page-link" href="?page=1">1</a></li>
+    <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
+    <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
+    {% elif scans.number == scans.paginator.num_pages %}
+    <li class="page-item"><a class="page-link" href="?page={{ scans.previous_page_number|add:'-5' }}">{{ scans.previous_page_number|add:"-1" }}</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ scans.previous_page_number  }}">{{ scans.previous_page_number }}</a></li>
+    <li class="page-item active"><a class="page-link" href="?page={{ scans.number }}">{{ scans.number }} </a></li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="?page={{ scans.previous_page_number }}">{{ scans.previous_page_number }}</a></li>
+    <li class="page-item active">
+      <a class="page-link" href="?page={{ scans.number }}">{{ scans.number }}</a>
+    </li>
+    <li class="page-item"><a class="page-link" href="?page={{ scans.next_page_number }}">{{ scans.next_page_number }}</a></li>
+    {% endif %}
 
-        {% if scans.has_previous %}
-            <a href="?page=1" class="btn btn-default">First</a>
-            <a href="?page={{ scans.previous_page_number }}" class="btn btn-default">Previous</a>
-        {% endif %}
+    {% if scans.has_next %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ scans.next_page_number }}">Next</a>
+      </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ scans.paginator.num_pages }}">Last</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="?page={{ scans.paginator.num_pages }}">Next</a>
+      </li>
+    <li class="page-item disabled">
+      <a class="page-link" href="?page={{ scans.paginator.num_pages }}">Last</a>
+    </li>
+    {% endif %}
+</ul>
 
-        {% if scans.has_next %}
-            <a href="?page={{ scans.next_page_number }}" class="btn btn-default">Next</a>
-            <a href="?page={{ scans.paginator.num_pages }}" class="btn btn-default">Last</a>
-        {% endif %}
-    </span>
-</div>
 
 
 {% endblock %}
