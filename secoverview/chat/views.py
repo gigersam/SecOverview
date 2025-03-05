@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from datetime import datetime
 from .models import ChatMessage, RAGPool
-from .ragdata import retrieve_context, retrieve_from_all_collections, document_loader
+from .ragdata import retrieve_context, retrieve_from_all_collections, document_loader, init_stores
 from .forms import UploadFileForm
 import requests
 import json
@@ -15,6 +15,7 @@ OLLAMA_MODEL = "deepseek-r1:8b"  # Change to your model name
 # Path to the YARA rules folder
 RAGPOOL_DIR = os.path.join(settings.MEDIA_ROOT, "ragpool")
 
+init_stores()
 
 @login_required
 def chatpage(request):

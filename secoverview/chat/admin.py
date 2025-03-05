@@ -31,8 +31,8 @@ class ChartAdmin(admin.ModelAdmin):
 @admin.register(APIData)
 class ChartAdmin(admin.ModelAdmin):
     list_display = [
-        'rag_pool', 
         'name',
+        'rag_pool', 
         'base_url',
         'description',
         'created_at',

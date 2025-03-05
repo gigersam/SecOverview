@@ -25,8 +25,8 @@ class UploadedFile(models.Model):
         return f"{self.file.name} ({self.rag_pool.RAGPoolName})"
 
 class APIData(models.Model):
-    rag_pool = models.ForeignKey(RAGPool, on_delete=models.CASCADE)  # Link to RAGPool
     name = models.CharField(max_length=255, unique=True, help_text="A unique name for the API")
+    rag_pool = models.ForeignKey(RAGPool, on_delete=models.CASCADE)  # Link to RAGPool
     base_url = models.URLField(help_text="The base URL of the API")
     api_key = models.CharField(max_length=512, help_text="The API key for authentication")
     description = models.TextField(blank=True, null=True, help_text="A brief description of the API")

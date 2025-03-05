@@ -39,7 +39,7 @@ def init_collection(collection_name: str):
 
     return collection_dict[collection_name], retriever_dict[collection_name]
 
-def generate_embedding(chunk):
+def generate_embedding(chunk): 
     return embedding_function.embed_query(chunk.page_content)
 
 def pdfloader(file_path, collection_name="foundations_of_llms"):
@@ -123,7 +123,7 @@ def fetch_api_data(api_url, header, params=None):
         else:
             response = requests.get(api_url, headers=header, params=params, timeout=10, verify=False)
         response.raise_for_status()
-        return response.text  # Can be JSON or text data
+        return response.content  # Can be JSON or text data
     except requests.exceptions.RequestException as e:
         print(f"API request failed: {e}")
         return None
@@ -150,8 +150,7 @@ def api_data_loader(api_url, header, collection_name="api_data_collection"):
     except json.JSONDecodeError:
         text = data  # Assume it's plain text if not JSON
 
-    print(text)
-
+    text = str(text)
     # Split text into chunks
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=2000)
     chunks = text_splitter.create_documents([text])
@@ -197,16 +196,17 @@ def document_loader(document, collection_name):
             jsonloader(document, collection_name)
 
 def init_stores():
-    rag_pools = RAGPool.objects.all()
-    for collection_name in rag_pools:
-        if collection_name.RAGPoolName not in retriever_dict:
-            init_collection(collection_name.RAGPoolName)
+    #rag_pools = RAGPool.objects.all()
+    #for collection_name in rag_pools:
+    #    if collection_name.RAGPoolName not in retriever_dict:
+    #        init_collection(collection_name.RAGPoolName)
     
     documents = UploadedFile.objects.all()
     for document in documents:
         document_loader(document=document, collection_name=document.rag_pool.RAGPoolName)
 
     apis = APIData.objects.all()
+    print()
     for api in apis:
         header = {
             "Authorization": f"Bearer {api.api_key}",
@@ -214,4 +214,3 @@ def init_stores():
         }
         api_data_loader(api.base_url, header=header, collection_name=api.rag_pool.RAGPoolName)
 
-init_stores()
