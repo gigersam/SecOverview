@@ -10,3 +10,4 @@ media*
 exclude
 
 staticfiles
+*chroma_db*

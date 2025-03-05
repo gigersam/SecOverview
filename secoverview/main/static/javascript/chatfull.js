@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box-full");
     const userInput = document.getElementById("user_input");
     const sendBtn = document.getElementById("send-btn");
+    const ragpool = document.getElementById("ragpool");
 
     function getCSRFToken() {
         return document.querySelector("[name=csrfmiddlewaretoken]").value;
@@ -17,6 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        let ragpoolInputValue = ragpool.textContent
+        
         chatBox.innerHTML += `<p><b>You:</b> ${userInputValue}</p>`;
         userInput.value = "";
 
@@ -26,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "X-CSRFToken": getCSRFToken()
             },
-            body: new URLSearchParams({ "user_input": userInputValue })
+            body: new URLSearchParams({ "user_input": userInputValue, "ragpool": ragpoolInputValue })
         });
 
         const data = await response.json();

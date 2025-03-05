@@ -1,13 +1,20 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from datetime import datetime
-from .models import ChatMessage
+from .models import ChatMessage, RAGPool
+from .ragdata import retrieve_context, retrieve_from_all_collections, document_loader
+from .forms import UploadFileForm
 import requests
 import json
+import os
 
 OLLAMA_URL = "http://localhost:11434/api/chat"  # Adjust if needed
 OLLAMA_MODEL = "deepseek-r1:8b"  # Change to your model name
+# Path to the YARA rules folder
+RAGPOOL_DIR = os.path.join(settings.MEDIA_ROOT, "ragpool")
+
 
 @login_required
 def chatpage(request):
@@ -16,18 +23,29 @@ def chatpage(request):
     if request.method == "POST":
         user_input = request.POST.get("user_input")
         context = request.POST.get("context")
+        ragpool_name = request.POST.get("ragpool")
         
-        if context == "":
-            payload = {
-                "model": OLLAMA_MODEL,
-                "messages": [{"role": "user", "content": user_input}]
-            }
-        else:
+        if ragpool_name not in ["Select a data pool", "No Data Pool", None]:
+            if ragpool_name == "Every Data Pool":
+                context = retrieve_from_all_collections(user_input)
+            else:
+                context = retrieve_context(user_input, ragpool_name)
             payload = {
                 "model": OLLAMA_MODEL,
                 "messages": [{"role": "user", "content": f"Use this context: {context} \n\n Question: {user_input}"}]
             }
-        
+        else:
+            if context in ["", None]:
+                payload = {
+                    "model": OLLAMA_MODEL,
+                    "messages": [{"role": "user", "content": user_input}]
+                }
+            else:
+                payload = {
+                    "model": OLLAMA_MODEL,
+                    "messages": [{"role": "user", "content": f"Use this context: {context} \n\n Question: {user_input}"}]
+                } 
+            
         print(payload)
 
         headers = {"Content-Type": "application/json"}
@@ -58,6 +76,7 @@ def chatpage(request):
             return JsonResponse({"response": "Error communicating with model"}, status=500)
     
     messages = ChatMessage.objects.all().order_by("-timestamp")[:10]
+    ragpools = RAGPool.objects.all()
     return render(
         request,
         'chatpage.html',
@@ -65,6 +84,30 @@ def chatpage(request):
             'title':'Chat',
             'year':datetime.now().year,
             'messages':messages,
-            'chatnotavailable':True
+            'chatnotavailable':True,
+            'ragpools':ragpools
+        }
+    )
+
+
+@login_required
+def upload_file_view(request):
+    """ Handles file uploads with a selected RAG Pool """
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_file = form.save()
+            document_loader(uploaded_file, uploaded_file.rag_pool.RAGPoolName)
+            return redirect("chatpage")
+    else:
+        form = UploadFileForm()
+
+    return render(
+        request,
+        'upload.html',
+        {
+            'title':'Upload Chat',
+            'year':datetime.now().year,
+            'form':form,
         }
     )

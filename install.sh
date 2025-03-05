@@ -58,7 +58,7 @@ cd $DJANGO_APP_DIR
 mkdir media
 mkdir media/scans
 mkdir media/yararules
-mkdir media/chat_Data_StoragePool
+mkdir media/ragpool
 
 cat << EOF > api/localinteraction/config.py
 CREDENTIALS = {
