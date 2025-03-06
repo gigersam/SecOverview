@@ -1,4 +1,5 @@
 import uuid
+from django.contrib.auth.models import Group
 from django.db import models
 
 class ChatMessage(models.Model):
@@ -39,3 +40,7 @@ class APIData(models.Model):
 
     def __str__(self):
         return self.name
+    
+class RAGGroup(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    rag_pool = models.ManyToManyField(RAGPool, related_name="groups")  # Link to RAGPool

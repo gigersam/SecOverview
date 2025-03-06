@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, JsonResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from datetime import datetime
-from .models import ChatMessage, RAGPool
+from .models import ChatMessage, RAGPool, RAGGroup
 from .ragdata import retrieve_context, retrieve_from_all_collections, document_loader, init_stores
 from .forms import UploadFileForm
 import requests
@@ -17,6 +17,18 @@ RAGPOOL_DIR = os.path.join(settings.MEDIA_ROOT, "ragpool")
 
 init_stores()
 
+def user_group_ragpools(user):
+    if user.is_authenticated:
+        if not user.is_staff:
+            rag_groups = RAGGroup.objects.filter(group__in=user.groups.all())  # Get RAGGroup instances
+            rag_pools = RAGPool.objects.filter(groups__in=rag_groups).distinct()  # Get related RAGPool instances
+            return rag_pools
+        else:
+            rag_pools = RAGPool.objects.all()
+            return rag_pools 
+
+    return False
+
 @login_required
 def chatpage(request):
     """Renders the about page."""
@@ -27,14 +39,21 @@ def chatpage(request):
         ragpool_name = request.POST.get("ragpool")
         
         if ragpool_name not in ["Select a data pool", "No Data Pool", None]:
-            if ragpool_name == "Every Data Pool":
-                context = retrieve_from_all_collections(user_input)
-            else:
+            ragpools = user_group_ragpools(request.user)
+            if ragpools.filter(RAGPoolName=ragpool_name).exists():
+                #if ragpool_name == "Every Data Pool":
+                #    context = retrieve_from_all_collections(user_input)
+                #else:
                 context = retrieve_context(user_input, ragpool_name)
-            payload = {
-                "model": OLLAMA_MODEL,
-                "messages": [{"role": "user", "content": f"Use this context: {context} \n\n Question: {user_input}"}]
-            }
+                payload = {
+                    "model": OLLAMA_MODEL,
+                    "messages": [{"role": "user", "content": f"Use this context: {context} \n\n Question: {user_input}"}]
+                }
+            else: 
+                payload = {
+                    "model": OLLAMA_MODEL,
+                    "messages": [{"role": "user", "content": user_input}]
+                }
         else:
             if context in ["", None]:
                 payload = {
@@ -77,7 +96,8 @@ def chatpage(request):
             return JsonResponse({"response": "Error communicating with model"}, status=500)
     
     messages = ChatMessage.objects.all().order_by("-timestamp")[:10]
-    ragpools = RAGPool.objects.all()
+    ragpools = user_group_ragpools(request.user)
+
     return render(
         request,
         'chatpage.html',
@@ -92,6 +112,7 @@ def chatpage(request):
 
 
 @login_required
+@user_passes_test(lambda u: u.is_staff)
 def upload_file_view(request):
     """ Handles file uploads with a selected RAG Pool """
     if request.method == "POST":

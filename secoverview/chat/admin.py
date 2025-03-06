@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import APIData, ChatMessage, RAGPool, UploadedFile
+from .models import APIData, ChatMessage, RAGPool, UploadedFile, RAGGroup
 
 @admin.register(ChatMessage)
 class ChartAdmin(admin.ModelAdmin):
@@ -40,3 +40,11 @@ class ChartAdmin(admin.ModelAdmin):
     ]
     search_fields = ['rag_pool','name','base_url','descrition']
     list_filter = ['rag_pool']
+
+@admin.register(RAGGroup)
+class RAGGroupAdmin(admin.ModelAdmin):
+    list_display = [
+        'group',
+    ]
+    search_fields = ['group','rag_pool']
+    list_filter = ['group']

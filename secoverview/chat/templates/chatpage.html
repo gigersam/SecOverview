@@ -16,7 +16,6 @@
                 <ul class="dropdown-menu" id="dropdownList" class="dropdown-content">
                   <input type="text" placeholder="Search..." class="dropdown-search" id="dropdownSearch" onkeyup="filterFunction()">
                   <li><a class="dropdown-item" onclick="selectItem(this)">No Data Pool</a></li>
-                  <li><a class="dropdown-item" onclick="selectItem(this)">Every Data Pool</a></li>
                   {% for item in ragpools %}
                   <li><a class="dropdown-item" onclick="selectItem(this)">{{ item.RAGPoolName }}</a></li>
                   {% endfor %}
