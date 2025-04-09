@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpRequest
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 from .models import RSSFeed, FeedSource
 from django.db.models import Q
 import requests
@@ -51,6 +52,8 @@ def rss_feed_view(request):
         request, 
         "rss_feed.html", 
         {
+            'title':'Ransomwarelive Victims Overview',
+            'year':datetime.now().year,
             "feed_items": page_obj,
             'chatcontext':"This page shows RSS-Feeds. Feeds-Data: " + str(page_obj.object_list)
         })

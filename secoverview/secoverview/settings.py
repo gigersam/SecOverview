@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     # Custom Apps
     'accounts',
     'api',
+    'backup',
     'nmapapp',
     'main',
     'dashboard',
