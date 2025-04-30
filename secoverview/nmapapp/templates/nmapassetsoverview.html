@@ -20,7 +20,7 @@
             <td>{{ asset.name }}</td>
             <td>{{ asset.ip_address }}</td>
             <td>{{ asset.added_by_scan }}</td>
-            <td><a href="{% url 'assetview' asset.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+            <td><a href="{% url 'nmapassetview' asset.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
         </tr>
         {% endfor %}
     </table>

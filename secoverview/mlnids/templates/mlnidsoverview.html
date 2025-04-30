@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>ML NIDS Overview</h1>
+    <table class="table table-hover">
+            <tr>
+                <th>Source IP:Port</th>
+                <th>Dest IP:Port</th>
+                <th>Protocol</th>
+                <th>Duration</th>
+                <th>Prediction</th>
+                <th>Confidence</th>
+                <th>Anomaly</th>
+                <th>Actions</th>
+            </tr>
+            {% for flow in flows %}
+            <tr>
+                <td>{{ flow.src_ip }}:{{ flow.src_port }}</td>
+                <td>{{ flow.dst_ip }}:{{ flow.dst_port }}</td>
+                <td>{{ flow.protocol }}</td>
+                <td>{{ flow.flow_duration|floatformat:0 }}</td>
+                <td>{{ flow.rf_prediction.label }}</td>
+                <td>{{ flow.rf_confidence|floatformat:2 }}</td>
+                <td>{{ flow.if_is_anomaly }}</td>
+                <td><a href="{% url 'mlnidsdetection' pk=flow.pk %}" class="btn btn-dark">View</a></td>
+            </tr>
+            {% endfor %}
+    </table>
+    <ul class="pagination">
+        {% if flows.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">First</a>
+          </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ flows.previous_page_number }}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="?page=1" tabindex="-1">First</a>
+          </li>
+        <li class="page-item disabled">
+          <a class="page-link" href="?page=1" tabindex="-1">Previous</a>
+        </li>
+        {% endif %}
+    
+        {% if flows.number == 1 %}
+        <li class="page-item active"><a class="page-link" href="?page=1">1</a></li>
+        <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
+        <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
+        {% elif flows.number == flows.paginator.num_pages %}
+        <li class="page-item"><a class="page-link" href="?page={{ flows.previous_page_number|add:'-5' }}">{{ flows.previous_page_number|add:"-1" }}</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ flows.previous_page_number  }}">{{ flows.previous_page_number }}</a></li>
+        <li class="page-item active"><a class="page-link" href="?page={{ flows.number }}">{{ flows.number }} </a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ flows.previous_page_number }}">{{ flows.previous_page_number }}</a></li>
+        <li class="page-item active">
+          <a class="page-link" href="?page={{ flows.number }}">{{ flows.number }}</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="?page={{ flows.next_page_number }}">{{ flows.next_page_number }}</a></li>
+        {% endif %}
+    
+        {% if flows.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ flows.next_page_number }}">Next</a>
+          </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ flows.paginator.num_pages }}">Last</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="?page={{ flows.paginator.num_pages }}">Next</a>
+          </li>
+        <li class="page-item disabled">
+          <a class="page-link" href="?page={{ flows.paginator.num_pages }}">Last</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+
+{% endblock %}

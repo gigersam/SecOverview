@@ -9,10 +9,20 @@ class Nmapscan(models.Model):
     def __str__(self):
         return f"Record {self.id} - IP: {self.ip or 'N/A'}"
     
-class Assets(models.Model):
+class NmapAssets(models.Model):
     hostname = models.CharField(max_length=255, blank=True, null=True)
     ip_address = models.GenericIPAddressField()
+    json_data = models.JSONField(blank=True, null=True)
     added_by_scan = models.ForeignKey(Nmapscan, on_delete=models.CASCADE, related_name='scan')
 
     def __str__(self):
         return self.ip_address
+
+class AssetsNmapscan(models.Model):
+    assets = models.ForeignKey(NmapAssets, on_delete=models.CASCADE)
+    assets_json_data = models.JSONField(blank=True, null=True)
+    nmapscan = models.ForeignKey(Nmapscan, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return f"Record {self.id} - IP: {self.assets or 'N/A'}"

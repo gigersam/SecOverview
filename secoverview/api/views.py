@@ -1,11 +1,15 @@
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 from ransomwarelive.models import RansomwareliveVictim, RansomwareliveGroupsGroup, RansomwareliveGroupsLocation, RansomwareliveGroupsProfile
+from mlnids.models import NetworkFlow, RfPrediction
 import requests
 import nmap
+import csv
+import io
 
 @api_view(['POST'])
 def logout_view(request):
@@ -74,5 +78,53 @@ def nmap_scan(request):
         return Response(e, status=500)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def mlnids_upload_csv(request):
+    file = request.FILES.get('file')
     
+    if not file:
+        return Response({'error': 'No file provided'}, status=400)
+    
+    if not file.name.endswith('.csv'):
+        return Response({'error': 'Only CSV files are supported'}, status=400)
+
+    try:
+        decoded_file = file.read().decode('utf-8')
+        io_string = io.StringIO(decoded_file)
+        reader = csv.DictReader(io_string)
+        print(reader)
+        entries = []
+        for row in reader:
+            prediction_label = row.pop("rf_prediction", "Unknown")
+            prediction, _ = RfPrediction.objects.get_or_create(label=prediction_label)
+            print(prediction)
+            # Boolean conversion
+            anomaly_flag = row.get("if_is_anomaly", "False") in ["True", "true", "1"]
+
+            flow = NetworkFlow(
+                rf_prediction=prediction,
+                rf_confidence=row.pop("rf_confidence", 0),
+                if_anomaly_score=row.pop("if_anomaly_score", 0),
+                if_is_anomaly=anomaly_flag
+            )
+
+            for key, value in row.items():
+                print(f"Setting {key} to {value}")
+                if hasattr(flow, key):
+                    # Try to cast to appropriate type if needed
+                    setattr(flow, key, value)
+            
+            try:
+                flow.save()
+            except Exception as e:
+                print(f"Error saving flow: {e}")
+
+            entries.append(flow)
+        print(f"{entries}")
+        NetworkFlow.objects.bulk_create(entries, ignore_conflicts=True)
+        return Response({'message': f'{len(entries)} records uploaded.'}, status=201)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
 

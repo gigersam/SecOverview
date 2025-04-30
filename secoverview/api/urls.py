@@ -8,5 +8,6 @@ urlpatterns = [
     path('ransomwarelive/groups/fetch', views.fetch_groups, name='ransomware_fetch_groups'),
     path('ransomwarelive/victims/fetch', views.fetch_victims, name='ransomware_fetch_victims'),
     path('nmap/scan', views.nmap_scan, name='nmap_scan'),
+    path('mlnids/upload', views.mlnids_upload_csv, name='mlnids_upload_csv'),
     path('logout', views.logout_view, name='logout_api'),
 ]

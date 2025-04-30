@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>ML NIDS Detection</h1>
+    <div class="d-grid gap-4 d-md-flex">
+        <p>{{ flow.flow_key }}</p>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="hidden" class="form-control" name="falsepositiv" id="falsepositiv" value="True">
+            <input type="hidden" class="form-control" name="id" id="id" value="{{ flow.pk }}">
+            <button type="submit" class="btn btn-dark">False-Positiv</button>
+        </form>
+
+    </div>
+    <table class="table table-hover">
+        <tr>
+            <td><b>Key</b></td>
+            <td><b>Value</b></td>
+        </tr>
+        <tr>
+            <td><b>Source IP:</b></td>
+            <td>
+                <div class="d-grid gap-4 d-md-flex">
+                    <p>{{ flow.src_ip }}</p>
+                    <form action="{% url 'nmapscan' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" class="form-control" name="ip" id="id_IP" value="{{ flow.src_ip }}">
+                        <input type="hidden" class="form-control" name="parameters" id="id_parameters" value="-sV -n -R -p 1-1024">
+                        <button type="submit" class="btn btn-dark">Scan with NMAP</button>
+                    </form>
+                    <form action="{% url 'ipcheckbgpview' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" class="form-control" name="ip" id="id_IP" value="{{ flow.src_ip }}">
+                        <button type="submit" class="btn btn-dark">Check ASN</button>
+                    </forms>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Source Port</b></td>
+            <td>{{ flow.src_port }}</td>
+        </tr>
+        <tr>
+            <td><b>Destination IP</b></td>
+            <td>
+                <div class="d-grid gap-4 d-md-flex">
+                    <p>{{ flow.dst_ip }}</p>
+                    <form action="{% url 'nmapscan' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" class="form-control" name="ip" id="id_IP_dst" value="{{ flow.dst_ip }}">
+                        <input type="hidden" class="form-control" name="parameters" id="id_parameters" value="-sV -n -R -p 1-1024">
+                        <button type="submit" class="btn btn-dark">Scan with NMAP</button>
+                    </form>
+                    <form action="{% url 'ipcheckbgpview' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" class="form-control" name="ip" id="id_IP_dst" value="{{ flow.dst_ip }}">
+                        <button type="submit" class="btn btn-dark">Check ASN</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Destination Port</b></td>
+            <td>{{ flow.dst_port }}</td>
+        </tr>
+        <tr>
+            <td><b>Protocol</b></td>
+            <td>{{ flow.protocol }}</td>
+        </tr>
+        <tr>
+            <td><b>RF-Prediction / Confidence</b></td>
+            <td>{% if flow.rf_prediction.label == "Benign" %}
+                    {{ flow.rf_prediction }} / {{ flow.rf_confidence|floatformat:2 }}
+                {% else %}
+                    <b>{{ flow.rf_prediction }} / {{ flow.rf_confidence|floatformat:2 }}</b>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td><b>IF-Anomaly / Confidence</b></td>
+            <td>{% if flow.if_is_anomaly %}
+                    <b>{{ flow.if_is_anomaly }} / {{ flow.if_anomaly_score|floatformat:2 }}</b>
+                {% else %}
+                    {{ flow.if_is_anomaly }} / {{ flow.if_anomaly_score|floatformat:2 }}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td><b>Flow-Duration (ms)</b></td>
+            <td>{{ flow.flow_duration|floatformat:0 }} ms</td>
+        </tr>
+        <tr>
+            <td><b>Total Pakets</b></td>
+            <td>{{ flow.tot_pkts }}</td>
+        </tr>
+        <tr>
+            <td><b>Total Bytes</b></td>
+            <td>{{ flow.tot_bytes|floatformat:0 }} bytes</td>
+        </tr>
+
+    </table>
+</div>
+
+{% endblock %}

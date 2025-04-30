@@ -11,3 +11,8 @@ exclude
 
 staticfiles
 *chroma_db*
+
+.env
+*.joblib*
+*.csv*
+*.pcap*

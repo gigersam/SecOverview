@@ -6,6 +6,6 @@ urlpatterns = [
     path('scan', views.scan, name='nmapscan'),
     path('scans', views.scansoverview, name='scansoverview'),
     path('scans/<int:id>', views.scanview, name='scanview'),
-    path('assets', views.assetsoverview, name='assetsoverview'),
-    path('assets/<int:id>', views.assetview, name='assetview'),
+    path('assets', views.nmapassetsoverview, name='nmapassetsoverview'),
+    path('assets/<int:id>', views.nmapassetview, name='nmapassetview'),
 ]

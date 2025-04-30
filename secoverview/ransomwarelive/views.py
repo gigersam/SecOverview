@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from django.core.paginator import Paginator
+from django.conf import settings
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from .models import RansomwareliveGroupsGroup, RansomwareliveVictim
 from django.db.models import Q
 from api.localinteraction.localinteraction import local_api_request_get
+
+localinteractionurl = settings.LOCAL_INTERACTION_URL
 
 @login_required
 def ransomwarelive(request):
@@ -20,7 +23,8 @@ def ransomwarelive(request):
             'title':'Ransomwarelive Overview',
             'year':datetime.now().year,
             'victims':victims,
-            'groups':groups
+            'groups':groups,
+            'chatcontext':f"Shows the latest ransomware live updates. Groups: {groups}, victims: {victims}" 
         }
     )
 
@@ -28,9 +32,9 @@ def ransomwarelive(request):
 def ransomwareliveupdate(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
-    api_url = "http://localhost:8000/api/ransomwarelive/groups/fetch"
+    api_url = localinteractionurl + "/api/ransomwarelive/groups/fetch"
     groups = local_api_request_get(api_url=api_url)
-    api_url = "http://localhost:8000/api/ransomwarelive/victims/fetch"
+    api_url = localinteractionurl + "/api/ransomwarelive/victims/fetch"
     groups = local_api_request_get(api_url=api_url)
     return redirect(ransomwarelive)
 
@@ -52,7 +56,8 @@ def victimsoverview(request):
         {
             'title':'Ransomwarelive Victims Overview',
             'year':datetime.now().year,
-            'victims':page_obj
+            'victims':page_obj,
+            'chatcontext':f"Shows Ransomwarelive Victims. Victims: {page_obj}" 
         }
     )
 
@@ -68,6 +73,7 @@ def victimview(request, id):
             'title':'Ransomwarelive Victim',
             'year':datetime.now().year,
             'victims':victims,
+            'chatcontext':f"Shows Ransomwarelive Victim {victims}" 
         }
     )
 
@@ -89,7 +95,8 @@ def groupsoverview(request):
         {
             'title':'Ransomwarelive Groups Overview',
             'year':datetime.now().year,
-            'groups':page_obj
+            'groups':page_obj,
+            'chatcontext':f"Shows Ransomwarelive Groups. Groups: {page_obj}" 
         }
     )
 @login_required
@@ -104,6 +111,7 @@ def groupview(request, id):
             'title':'Ransomwarelive Group',
             'year':datetime.now().year,
             'groups':groups,
+            'chatcontext':f"Shows Ransomwarelive Group: {groups}" 
         }
     )
 

@@ -4,15 +4,18 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db.models import Q
-from .models import Nmapscan, Assets
+from django.conf import settings
+from .models import Nmapscan, NmapAssets, AssetsNmapscan
 from api.localinteraction.localinteraction import local_api_request
 import json
+
+localinteractionurl = settings.LOCAL_INTERACTION_URL
 
 @login_required
 def overview(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
-    assets = Assets.objects.order_by('-id')[:5]
+    assets = NmapAssets.objects.order_by('-id')[:5]
     scans = Nmapscan.objects.order_by('-id')[:5]
     return render(
         request,
@@ -32,7 +35,7 @@ def scan(request):
         ip = request.POST.get('ip')
         parameters = request.POST.get('parameters')
 
-        api_url = "http://localhost:8000/api/nmap/scan"
+        api_url = localinteractionurl + "/api/nmap/scan"
         data = {"ip": ip, "parameters": parameters}
         json_data = local_api_request(api_url=api_url, data=data)
         json_data_dump = json.dumps(json_data, indent=4)
@@ -43,9 +46,10 @@ def scan(request):
             hostnames = data_obj.get("hostnames", [])
             hostname = hostnames[0].get("name") if hostnames else ""
 
-            Assets.objects.get_or_create(hostname=hostname, ip_address=ip_address, defaults={"added_by_scan": scanconfig})
+            asset = NmapAssets.objects.get_or_create(hostname=hostname, ip_address=ip_address, json_data=data_obj, defaults={"added_by_scan": scanconfig})
+            AssetsNmapscan.objects.create(assets=asset[0], assets_json_data=data_obj, nmapscan=scanconfig)
 
-        assets = Assets.objects.order_by('-id')[:5]
+        assets = NmapAssets.objects.order_by('-id')[:5]
         scans = Nmapscan.objects.order_by('-id')[:5]
 
         return render(
@@ -116,21 +120,21 @@ def scanview(request, id):
 
 
 @login_required
-def assetsoverview(request):
+def nmapassetsoverview(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
     query = request.GET.get("search")
     if query == None or query == "":
-        assets = Assets.objects.order_by('-id')
+        assets = NmapAssets.objects.order_by('-id')
     else:
-        assets = Assets.objects.filter(Q(hostname__icontains=query) | Q(ip_address__icontains=query)).order_by('-id')
+        assets = NmapAssets.objects.filter(Q(hostname__icontains=query) | Q(ip_address__icontains=query)).order_by('-id')
 
     paginator = Paginator(assets, 5)
     page_number = request.GET.get('page')  # Get the page number from the URL query parameter
     page_obj = paginator.get_page(page_number)  # Get the appropriate page of blog posts
     return render(
         request,
-        'assetsoverview.html',
+        'nmapassetsoverview.html',
         {
             'title':'NMAP Assets Overview',
             'year':datetime.now().year,
@@ -139,13 +143,13 @@ def assetsoverview(request):
     )
 
 @login_required
-def assetview(request, id):
+def nmapassetview(request, id):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
-    assets = Assets.objects.get(id=id)
+    assets = NmapAssets.objects.get(id=id)
     return render(
         request,
-        'assetview.html',
+        'nmapassetview.html',
         {
             'title':'NMAP Scans View',
             'year':datetime.now().year,

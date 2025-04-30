@@ -1,8 +1,11 @@
 import requests
+from django.conf import settings
 from .config import CREDENTIALS
 
+localinteractionurl = settings.LOCAL_INTERACTION_URL
+
 def local_api_request(api_url, data):
-    token_url = "http://127.0.0.1:8000/api/token"  # Adjust this to match your API
+    token_url = localinteractionurl + "/api/token"  # Adjust this to match your API
     credentials = CREDENTIALS
 
     try:
@@ -20,7 +23,7 @@ def local_api_request(api_url, data):
         return (f"Error obtaining access token: {e}")
     
 def local_api_request_get(api_url):
-    token_url = "http://127.0.0.1:8000/api/token"  # Adjust this to match your API
+    token_url = localinteractionurl + "/api/token"  # Adjust this to match your API
     credentials = CREDENTIALS
 
     try:

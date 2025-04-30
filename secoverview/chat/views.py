@@ -10,12 +10,12 @@ import requests
 import json
 import os
 
-OLLAMA_URL = "http://localhost:11434/api/chat"  # Adjust if needed
-OLLAMA_MODEL = "deepseek-r1:8b"  # Change to your model name
+OLLAMA_URL = settings.OLLAMA_API_URL + "/api/chat"  # Adjust if needed
+OLLAMA_MODEL = settings.OLLAMA_API_MODEL  # Change to your model name
 # Path to the YARA rules folder
 RAGPOOL_DIR = os.path.join(settings.MEDIA_ROOT, "ragpool")
 
-init_stores()
+#init_stores()
 
 def user_group_ragpools(user):
     if user.is_authenticated:
