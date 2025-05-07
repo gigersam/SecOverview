@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h3>Assets</h3>
+    <div class="d-grid gap-4 d-md-flex">
+        <table class="table table-hover">
+            <tr>
+                <td><b>Hostname</b></td>
+                <td><b>IP-Address</b></td>
+                <td><b>Description</b></td>
+                <td><b>Asset Classification</b></td>
+                <td><b>Threat Level</b></td>
+                <td><b>NMAP Asset</b></td>
+            </tr>
+            <tr>
+                <td>{{ asset.hostname }}</td>
+                <td>{{ asset.ip_address }}</td>
+                <td>{{ asset.description }}</td>
+                <td>{{ asset.asset_classification }}</td>
+                <td>{{ asset.threat_level }}</td>
+                {% if asset.nmap_asset.pk %}
+                    <td><a href="{% url 'nmapassetview' id=asset.nmap_asset.pk %}" class="btn btn-dark">View</a></td>
+                {% else %}
+                    <td>No NMAP Asset</td>
+                {% endif %}
+            </tr>
+        </table>
+    </div>
+    {% if ports %}
+    <h5>Ports</h5>
+    <div class="d-grid gap-4 d-md-flex">
+        <table class="table table-hover">
+            <tr>
+                <th>Port</th>
+                <th>Service</th>
+                <th>Product</th>
+                <th>CPE</th>
+                <th>Version</th>
+                <th>Extrainfo</th>
+                <th>Severity</th>
+            </tr>
+            {% for port in ports %}
+            <tr>
+                <td>{{ port.port_number }}</td>
+                <td>{{ port.service }}</td>
+                <td>{{ port.product }}</td>
+                <td>{{ port.cpe }}</td>
+                <td>{{ port.version }}</td>
+                <td>{{ port.extrainfo }}</td>
+                <td>{{ port.detection_severity }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+    {% if network_detection %}
+    <h5>Network Detection</h5>
+    <div class="d-grid gap-4 d-md-flex">
+        <table class="table table-hover">
+            <tr>
+                <th>Source IP:Port</th>
+                <th>Dest IP:Port</th>
+                <th>Protocol</th>
+                <th>Detection Severity</th>
+                <th>Prediction</th>
+                <th>Confidence</th>
+                <th>Anomaly</th>
+                <th>Solved</th>
+                <th>Network Detection</th>
+            </tr>
+            {% for flow in network_detection %}
+            <tr>
+                <td>{{ flow.mlnids_detection.src_ip }}:{{ flow.mlnids_detection.src_port }}</td>
+                <td>{{ flow.mlnids_detection.dst_ip }}:{{ flow.mlnids_detection.dst_port }}</td>
+                <td>{{ flow.mlnids_detection.protocol }}</td>
+                <td>{{ flow.detection_severity }}</td>
+                <td>{{ flow.mlnids_detection.rf_prediction.label }}</td>
+                <td>{{ flow.mlnids_detection.rf_confidence|floatformat:2 }}</td>
+                <td>{{ flow.mlnids_detection.if_is_anomaly }}</td>
+                <td>{{ flow.mlnids_detection.false_positiv }}</td>
+                <td><a href="{% url 'mlnidsdetection' pk=flow.mlnids_detection.pk %}" class="btn btn-dark">View</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

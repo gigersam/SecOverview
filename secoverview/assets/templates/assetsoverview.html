@@ -4,7 +4,98 @@
 
 <div class="p-4">
     <h1>Assets Overview</h1>
-
+    <div class="d-grid gap-4 d-md-flex">
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-dark" name="update_action" value="updateall">Update Assets and Detections</button>
+        </form>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-dark" name="update_action" value="updateassets">Update Assets</button>
+        </form>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-dark" name="update_action" value="updatedetection">Update Detections</button>
+        </form>
+    </div>
+    <br>
+    <div class="d-grid gap-4 d-md-flex">
+        <form class="d-flex">
+            <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+    <div class="d-grid gap-4 d-md-flex">
+        <table class="table table-hover">
+            <tr>
+                <td><b>Hostname</b></td>
+                <td><b>IP-Address</b></td>
+                <td><b>Description</b></td>
+                <td><b>Asset Classification</b></td>
+                <td><b>Threat Level</b></td>
+                <td><b>Actions</b></td>
+            </tr>
+            {% for asset in assets %}
+            <tr>
+                <td>{{ asset.hostname }}</td>
+                <td>{{ asset.ip_address }}</td>
+                <td>{{ asset.description }}</td>
+                <td>{{ asset.asset_classification }}</td>
+                <td>{{ asset.threat_level }}</td>
+                <td><a href="{% url 'assetview' asset.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <ul class="pagination">
+        {% if assets.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">First</a>
+          </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ assets.previous_page_number }}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="?page=1" tabindex="-1">First</a>
+          </li>
+        <li class="page-item disabled">
+          <a class="page-link" href="?page=1" tabindex="-1">Previous</a>
+        </li>
+        {% endif %}
+    
+        {% if assets.number == 1 %}
+        <li class="page-item active"><a class="page-link" href="?page=1">1</a></li>
+        <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
+        <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
+        {% elif assets.number == assets.paginator.num_pages %}
+        <li class="page-item"><a class="page-link" href="?page={{ assets.previous_page_number|add:'-5' }}">{{ assets.previous_page_number|add:"-1" }}</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ assets.previous_page_number  }}">{{ assets.previous_page_number }}</a></li>
+        <li class="page-item active"><a class="page-link" href="?page={{ assets.number }}">{{ assets.number }} </a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ assets.previous_page_number }}">{{ assets.previous_page_number }}</a></li>
+        <li class="page-item active">
+          <a class="page-link" href="?page={{ assets.number }}">{{ assets.number }}</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="?page={{ assets.next_page_number }}">{{ assets.next_page_number }}</a></li>
+        {% endif %}
+    
+        {% if assets.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ assets.next_page_number }}">Next</a>
+          </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ assets.paginator.num_pages }}">Last</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="?page={{ assets.paginator.num_pages }}">Next</a>
+          </li>
+        <li class="page-item disabled">
+          <a class="page-link" href="?page={{ assets.paginator.num_pages }}">Last</a>
+        </li>
+        {% endif %}
+    </ul>
 </div>
 
 {% endblock %}
