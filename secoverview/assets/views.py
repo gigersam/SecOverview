@@ -34,7 +34,7 @@ def assetsoverview(request):
         {
             'title':'Assets',
             'year':datetime.now().year,
-            'chatcontext':"Shows ML analysed detections on the network.",
+            'chatcontext':"Shows all assets with the Information Hostname, IP-Address, Description, Threat Level. There is also the option to update the Detction and/or Assets.",
             'assets':page_obj
         }
     )
@@ -46,6 +46,7 @@ def assetview(request, id):
     asset = ComputeAssets.objects.get(id=id)
     ports = ComputeAssetsNetworkPorts.objects.filter(asset=asset)
     network_detection = ComputeAssetsNetworkDetection.objects.filter(compute_assets=asset)
+    contextstring = f"This Asset {(asset.context_string() if asset != None else 'No information available')} and the following ports detected: {ports} and the following network detections: {network_detection}"
     return render(
         request,
         'assetview.html',
@@ -55,6 +56,6 @@ def assetview(request, id):
             'asset':asset,
             'ports':ports,
             'network_detection':network_detection,
-            'chatcontext':"Report about a NMAP Scan.",
+            'chatcontext':contextstring,
         }
     )

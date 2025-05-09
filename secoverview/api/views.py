@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
+from assets.assetsoperations import gather_all
 from ransomwarelive.models import RansomwareliveVictim, RansomwareliveGroupsGroup, RansomwareliveGroupsLocation, RansomwareliveGroupsProfile
 from mlnids.models import NetworkFlow, RfPrediction
 import requests
@@ -128,3 +129,12 @@ def mlnids_upload_csv(request):
     except Exception as e:
         return Response({'error': str(e)}, status=500)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def assets_gather_all(request):
+    try:
+        # Call the function you want to execute
+        gather_all()
+        return Response({'message': 'Gather assets and detection information successfully'}, status=200)
+    except Exception as e:
+        return Response({f'error': 'Failed gather assets and detection information'}, status=500)

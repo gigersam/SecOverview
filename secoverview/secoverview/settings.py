@@ -31,10 +31,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOCAL_INTERACTION_URL = "http://localhost:8000"
+LOCAL_INTERACTION_URL = 'http://localhost:8000'
 
-OLLAMA_API_URL = "http://localhost:11434"
-OLLAMA_API_MODEL = "qwen3:latest" #"deepseek-r1:8b"
+OLLAMA_API_URL = 'http://localhost:11434'
+OLLAMA_API_MODEL = 'qwen3:latest'
 
 # Application definition
 

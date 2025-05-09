@@ -13,8 +13,8 @@ class RansomwareliveGroupsGroup(models.Model):
 
 class RansomwareliveVictim(models.Model):
     post_title = models.CharField(max_length=256)
-    discovered = models.DateTimeField()
-    published = models.DateTimeField()
+    discovered = models.CharField(max_length=64)
+    published = models.CharField(max_length=64)
     post_url = models.URLField(max_length=2048, null=True, blank=True)
     country = models.CharField(max_length=64, null=True, blank=True)
     activity = models.CharField(max_length=2048, null=True, blank=True)
