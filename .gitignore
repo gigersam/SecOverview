@@ -16,3 +16,4 @@ staticfiles
 *.joblib*
 *.csv*
 *.pcap*
+secoverview/db.sqlite3-prod

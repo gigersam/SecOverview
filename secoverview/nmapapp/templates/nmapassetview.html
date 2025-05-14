@@ -20,6 +20,7 @@
         </form>
     </div>
     <p><b>Asset Disovery Report: </b><a href="{% url 'scanview' assets.added_by_scan.pk %}"><button type="button" class="btn btn-dark">{{ assets.added_by_scan }}</button></a></p>
+    <p><pre>{{ assets.json_data }}</pre></p>
 </div>
 
 {% endblock %}

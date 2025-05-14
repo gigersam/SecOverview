@@ -46,7 +46,7 @@ def scan(request):
             hostnames = data_obj.get("hostnames", [])
             hostname = hostnames[0].get("name") if hostnames else ""
 
-            asset = NmapAssets.objects.get_or_create(hostname=hostname, ip_address=ip_address, json_data=data_obj, defaults={"added_by_scan": scanconfig})
+            asset = NmapAssets.objects.get_or_create(hostname=hostname, ip_address=ip_address, json_data=json.dumps(data_obj, indent=4), defaults={"added_by_scan": scanconfig})
             AssetsNmapscan.objects.create(assets=asset[0], assets_json_data=data_obj, nmapscan=scanconfig)
 
         assets = NmapAssets.objects.order_by('-id')[:5]
