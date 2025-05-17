@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('assets/', include('assets.urls')),
     path('backup/', include('backup.urls')),
-    path('bgpviewcheck/', include('bgpviewcheck.urls')),
+    path('ipcheck/', include('ipcheck.urls')),
     path('chat/', include('chat.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('dns/', include('dnsops.urls')),

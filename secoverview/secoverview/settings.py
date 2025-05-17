@@ -12,10 +12,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -35,6 +37,10 @@ LOCAL_INTERACTION_URL = 'http://localhost:8000'
 
 OLLAMA_API_URL = 'http://localhost:11434'
 OLLAMA_API_MODEL = 'qwen3:latest'
+
+ABUSEIPDB_API_KEY = os.getenv('ABUSEIPDB_API_KEY')
+MISP_SERVER = os.getenv('MISP_SERVER')
+MISP_API_KEY = os.getenv('MISP_API_KEY')
 
 # Application definition
 
@@ -56,10 +62,10 @@ INSTALLED_APPS = [
     'api',
     'assets',
     'backup',
-    'bgpviewcheck',
     'chat',
     'dashboard',
     'dnsops',
+    'ipcheck',
     'main',
     'mlnids',
     'nmapapp',

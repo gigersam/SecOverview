@@ -16,11 +16,11 @@ def gather_nmap_assets_infos():
     nmapassets = NmapAssets.objects.all()
     for asset in nmapassets:
         computeasset, flag = ComputeAssets.objects.update_or_create(ip_address=asset.ip_address, defaults={"nmap_asset": asset, "hostname": asset.hostname})
-        assetjson = asset.json_data
+        string_json = str(asset.json_data)
+        assetjson = json.loads(string_json)
         tcp_data = assetjson.get("tcp", {})
         for port_str, port_info in tcp_data.items():
             record = {
-                "port_number": int(port_str),
                 "service": port_info.get("name"),
                 "product": port_info.get("product") or None,
                 "version": port_info.get("version") or None,
@@ -29,6 +29,7 @@ def gather_nmap_assets_infos():
             }
             ComputeAssetsNetworkPorts.objects.update_or_create(
                 asset=computeasset,
+                port_number=int(port_str),
                 defaults={
                     **record,
                     "detection_severity": 1, # Default to 'Negligible'

@@ -153,6 +153,7 @@ def nmapassetview(request, id):
         {
             'title':'NMAP Scans View',
             'year':datetime.now().year,
-            'assets':assets
+            'assets':assets,
+            'chatcontext':f"Report about a Asset from a NMAP Scan. The Asset data is: {assets.json_data}."
         }
     )

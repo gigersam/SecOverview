@@ -20,7 +20,7 @@ class ComputeAssets(models.Model):
 
 class ComputeAssetsNetworkPorts(models.Model):
     port_number  = models.IntegerField(max_length=255)
-    service  = models.CharField(max_length=255, null=True)
+    service  = models.CharField(max_length=255, blank=True, null=True)
     product  = models.CharField(max_length=255, blank=True, null=True)
     version  = models.CharField(max_length=255, blank=True, null=True)
     extrainfo = models.CharField(max_length=255, blank=True, null=True)

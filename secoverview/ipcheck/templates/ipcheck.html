@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-4">
+    <h1>IP Check</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label class="me-2" for="id_ip">IP:</label>
+        <input type="text" class="form-control" name="ip" id="id_ip" required><br><br>
+
+        <button type="submit" class="btn btn-dark">Check</button>
+    </form>
+    <br>
+    {% if response == "IP is Private" %}
+    <h5><b>IP is Private</b></h5>
+    {% elif response != "" %}
+    <div class="d-grid gap-4 d-md-flex">
+        <h5><b>IP:</b> {{ response.ip }}</h5>
+        <form action="{% url 'nmapscan' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" class="form-control" name="ip" id="id_IP_dst" value="{{ response.ip }}">
+            <input type="hidden" class="form-control" name="parameters" id="id_parameters" value="-sV -n -R -p 1-1024">
+            <button type="submit" class="btn btn-dark">Scan with NMAP</button>
+        </form>
+    </div>
+    <h5><b>PTR Record:</b> {{ response.ptr_record }}</h5>
+    <h5><b>ASN-Data:</b></h5>
+    <table class="table table-hover">
+        <tr>
+            <td><b>Prefix</b></td>
+            <td><b>Name</b></td>
+            <td><b>Description</b></td>
+            <td><b>ASN</b></td>
+            <td><b>ASN-Name</b></td>
+            <td><b>ASN-Description</b></td>
+            <td><b>ASN-Country</b></td>
+        </tr>
+        {% for prefix in response.prefixes %}
+        <tr>
+            <td>{{ prefix.prefix }}</td>
+            <td>{{ prefix.name }}</td>
+            <td>{{ prefix.description }}</td>
+            <td>{{ prefix.asn.asn }}</td>
+            <td>{{ prefix.asn.name }}</td>
+            <td>{{ prefix.asn.description }}</td>
+            <td>{{ prefix.asn.country_code }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% if abuseipdb != None %}
+    <br>
+    <h5><b>AbuseIPDB Results:</b></h5>
+    <table class="table table-hover">
+        <tr>
+            <td><b>Public-IP</b></td>
+            <td><b>Is Public</b></td>
+            <td><b>IP-Version</b></td>
+            <td><b>Whitelisted</b></td>
+            <td><b>Confidence</b></td>
+            <td><b>Country</b></td>
+            <td><b>Used-For</b></td>
+            <td><b>ISP</b></td>
+            <td><b>Domain</b></td>
+            <td><b>Tor</b></td>
+            <td><b>Total Reports</b></td>
+        </tr>
+        <tr>
+            <td>{{ abuseipdb.ipAddress }}</td>
+            <td>{{ abuseipdb.isPublic }}</td>
+            <td>{{ abuseipdb.ipVersion }}</td>
+            <td>{{ abuseipdb.isWhitelisted }}</td>
+            <td>{{ abuseipdb.abuseConfidenceScore }}</td>
+            <td>{{ abuseipdb.countryCode }}</td>
+            <td>{{ abuseipdb.usageType }}</td>
+            <td>{{ abuseipdb.isp }}</td>
+            <td>{{ abuseipdb.domain }}</td>
+            <td>{{ abuseipdb.isTor }}</td>
+            <td>{{ abuseipdb.totalReports }}</td>
+        </tr>
+    </table>
+    {% endif %}
+    {% if misp != None %}
+    <h5><b>MISP-Data:</b></h5>
+    <table class="table table-hover">
+        <tr>
+            <td><b>ID</b></td>
+            <td><b>Event ID</b></td>
+            <td><b>Category</b></td>
+            <td><b>IDS</b></td>
+            <td><b>Comment</b></td>
+            <td><b>Value</b></td>
+            <td><b>Event Info</b></td>
+        </tr>
+        {% for data in misp %}
+        <tr>
+            <td>{{ data.id }}</td>
+            <td>{{ data.event_id }}</td>
+            <td>{{ data.category }}</td>
+            <td>{{ data.to_ids }}</td>
+            <td>{{ data.comment }}</td>
+            <td>{{ data.value }}</td>
+            <td>{{ data.Event.info }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+
+
+
+{% endblock %}

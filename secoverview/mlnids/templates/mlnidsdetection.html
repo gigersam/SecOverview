@@ -30,10 +30,10 @@
                         <input type="hidden" class="form-control" name="parameters" id="id_parameters" value="-sV -n -R -p 1-1024">
                         <button type="submit" class="btn btn-dark">Scan with NMAP</button>
                     </form>
-                    <form action="{% url 'ipcheckbgpview' %}" method="POST">
+                    <form action="{% url 'ipcheck' %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" class="form-control" name="ip" id="id_IP" value="{{ flow.src_ip }}">
-                        <button type="submit" class="btn btn-dark">Check ASN</button>
+                        <button type="submit" class="btn btn-dark">Check IP</button>
                     </forms>
                 </div>
             </td>
@@ -53,10 +53,10 @@
                         <input type="hidden" class="form-control" name="parameters" id="id_parameters" value="-sV -n -R -p 1-1024">
                         <button type="submit" class="btn btn-dark">Scan with NMAP</button>
                     </form>
-                    <form action="{% url 'ipcheckbgpview' %}" method="POST">
+                    <form action="{% url 'ipcheck' %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" class="form-control" name="ip" id="id_IP_dst" value="{{ flow.dst_ip }}">
-                        <button type="submit" class="btn btn-dark">Check ASN</button>
+                        <button type="submit" class="btn btn-dark">Check IP</button>
                     </form>
                 </div>
             </td>

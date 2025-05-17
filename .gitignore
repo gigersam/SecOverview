@@ -1,7 +1,7 @@
 *.code-workspace
 venv
 *__pycache__*
-db.sqlite3
+db.sqlite3*
 *migrations*
 *config.py
 secoverview/api/localinteraction/config.py
