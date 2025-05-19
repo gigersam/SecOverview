@@ -85,9 +85,15 @@ CREDENTIALS = {
 }
 EOF
 
+cat << EOF > .env
+ABUSEIPDB_API_KEY=your_api_key_here
+MISP_SERVER=misp_server_address_here
+MISP_API_KEY=your_api_key_here
+EOF
+
 # Apply migrations
 echo "Applying migrations..."
-source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py makemigrations accounts api assets backup bgpviewcheck chat dashboard dnsops main mlnids nmapapp ransomwarelive rssapp yarascan
+source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py makemigrations accounts api assets backup chat dashboard dnsops ipcheck main mlnids nmapapp ransomwarelive rssapp yarascan
 source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate
 
 # Create a superuser (optional)
