@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         chatBox.innerHTML += `<p><b>You:</b> ${userInputValue}</p>`;
+        chatBox.innerHTML += `<p><b>Waiting for response...</b></p>`;
         userInput.value = "";
 
         const response = await fetch("/chat/", {

@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let ragpoolInputValue = ragpool.textContent
         
         chatBox.innerHTML += `<p><b>You:</b> ${userInputValue}</p>`;
+        chatBox.innerHTML += `<p><b>Waiting for response...</b></p>`;
         userInput.value = "";
 
         const response = await fetch("", {

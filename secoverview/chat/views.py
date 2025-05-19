@@ -66,7 +66,7 @@ def chatpage(request):
                     "messages": [{"role": "user", "content": f"Use this context: {context} \n\n Question: {user_input}"}]
                 } 
             
-        print(payload)
+        #print(payload)
 
         headers = {"Content-Type": "application/json"}
         
@@ -81,7 +81,7 @@ def chatpage(request):
             response_string = ""
             for item in response_content:
                 response_string += str(item.get("message", {}).get("content", ""))
-            print(response_string)
+            #print(response_string)
             json_response = {
                 "model": response_content[0].get("model", ""),
                 "message": response_string,
