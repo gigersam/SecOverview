@@ -7,6 +7,7 @@ urlpatterns = [
     path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('ransomwarelive/groups/fetch', views.fetch_groups, name='ransomware_fetch_groups'),
     path('ransomwarelive/victims/fetch', views.fetch_victims, name='ransomware_fetch_victims'),
+    path('rssapp/feeds/update', views.rss_feed_update, name='rss_feed_update'),
     path('nmap/scan', views.nmap_scan, name='nmap_scan'),
     path('mlnids/upload', views.mlnids_upload_csv, name='mlnids_upload_csv'),
     path('assets/gather/all', views.assets_gather_all, name='assets_gather_all'),

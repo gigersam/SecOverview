@@ -18,19 +18,22 @@ def fetch_rss_feed(query):
         feed_sources = FeedSource.objects.all()
 
         for feed_source in feed_sources:
-            response = requests.get(feed_source.url, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"})
-            root = ET.fromstring(response.content)
-            items = root.findall(".//item")
+            try:
+                response = requests.get(feed_source.url, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"})
+                root = ET.fromstring(response.content)
+                items = root.findall(".//item")
 
-            for item in items:
-                title = item.find("title").text if item.find("title") is not None else "No Title"
-                link = item.find("link").text if item.find("link") is not None else "#"
-                description = item.find("description").text if item.find("description") is not None else "No Description"
-                rmhtml = re.compile('<.*?>') 
-                description = re.sub(rmhtml, '', description)
-                # Store in database if not already present
-                if not RSSFeed.objects.filter(link=link).exists():
-                    RSSFeed.objects.create(title=title, link=link, summary=description, source=feed_source)
+                for item in items:
+                    title = item.find("title").text if item.find("title") is not None else "No Title"
+                    link = item.find("link").text if item.find("link") is not None else "#"
+                    description = item.find("description").text if item.find("description") is not None else "No Description"
+                    rmhtml = re.compile('<.*?>') 
+                    description = re.sub(rmhtml, '', description)
+                    # Store in database if not already present
+                    if not RSSFeed.objects.filter(link=link).exists():
+                        RSSFeed.objects.create(title=title, link=link, summary=description, source=feed_source)
+            except Exception as e:
+                print(f"Error fetching {feed_source.name}: {e}")
 
         feed_items = RSSFeed.objects.order_by('-pub_date')
     else:

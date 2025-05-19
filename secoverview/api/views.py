@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 from assets.assetsoperations import gather_all
+from rssapp.views import fetch_rss_feed
 from ransomwarelive.models import RansomwareliveVictim, RansomwareliveGroupsGroup, RansomwareliveGroupsLocation, RansomwareliveGroupsProfile
 from mlnids.models import NetworkFlow, RfPrediction
 import requests
@@ -138,3 +139,13 @@ def assets_gather_all(request):
         return Response({'message': 'Gather assets and detection information successfully'}, status=200)
     except Exception as e:
         return Response({f'error': 'Failed gather assets and detection information'}, status=500)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def rss_feed_update(request):
+    try:
+        # Call the function you want to execute
+        fetch_rss_feed()
+        return Response({'message': 'Gather RSS Feeds successfully'}, status=200)
+    except Exception as e:
+        return Response({f'error': 'Failed gather RSS Feed'}, status=500)
