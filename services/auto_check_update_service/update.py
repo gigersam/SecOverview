@@ -107,6 +107,21 @@ def update_rss_feed(last_update_rss_feed, update_cycle_rss_feed, headers):
     else:
         return last_update_rss_feed
     
+
+def update_cve_data(last_update_cve_data, update_cycle_cve_data, headers):
+    if last_update_cve_data is None or (datetime.now() - last_update_cve_data) > timedelta(days=update_cycle_cve_data):
+        url = BASE_URI + "/api/cve/daily/get"
+        response = requests.get(url, headers=headers)
+        if response == 200:
+            logging.info(f"RSSFEED: Succsefully updated RSS Feed.")
+            last_update_cve_data = datetime.now()
+            return last_update_cve_data
+        else:
+            logging.info(f"RSSFEED: Failed to update RSS Feed. Response code: {response.status_code}")
+            return last_update_cve_data
+    else:
+        return last_update_cve_data
+    
 if __name__ == '__main__':
     token_set = False
     last_update = datetime.now()
@@ -115,9 +130,11 @@ if __name__ == '__main__':
     last_update_assets = None
     last_update_ransomware = None
     last_update_rss_feed = None
+    last_update_cve_data = None
     update_cycle_assets = int(os.getenv('UPDATE_CYCLE_ASSETS'))
     update_cycle_ransomwarelive = int(os.getenv('UPDATE_CYCLE_RANSOMWARELIVE'))
     update_cycle_rss_feed = int(os.getenv('UPDATE_CYCLE_RSS_FEED'))
+    update_cycle_cve_data = int(os.getenv('UPDATE_CYCLE_CVE_DATA'))
     
     while True:
         access_token, refresh_token_val, token_set = token_management(token_set=token_set, last_update=last_update, refresh_token_val_in=refresh_token_val, access_token_in=access_token)
@@ -125,6 +142,7 @@ if __name__ == '__main__':
             headers = {"Authorization": f"Bearer {access_token}"}
             last_update_assets = update_assets(last_update_assets=last_update_assets, update_cycle_assets=update_cycle_assets, headers=headers)
             last_update_ransomware = update_ransomware(last_update_ransomware=last_update_ransomware, update_cycle_ransomwarelive=update_cycle_ransomwarelive, headers=headers)
-            last_update_rss_feed = update_ransomware(last_update_rss_feed=last_update_rss_feed, update_cycle_rss_feed=update_cycle_rss_feed, headers=headers)
+            last_update_rss_feed = update_rss_feed(last_update_rss_feed=last_update_rss_feed, update_cycle_rss_feed=update_cycle_rss_feed, headers=headers)
+            last_update_cve_data = update_cve_data(last_update_cve_data=last_update_cve_data, update_cycle_cve_data=update_cycle_cve_data, headers=headers)
             
 

@@ -17,3 +17,5 @@ staticfiles
 *.csv*
 *.pcap*
 secoverview/db.sqlite3-prod
+
+nvdcve-2.0-20*.json

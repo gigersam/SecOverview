@@ -11,5 +11,6 @@ urlpatterns = [
     path('nmap/scan', views.nmap_scan, name='nmap_scan'),
     path('mlnids/upload', views.mlnids_upload_csv, name='mlnids_upload_csv'),
     path('assets/gather/all', views.assets_gather_all, name='assets_gather_all'),
+    path('cve/daily/get', views.cve_get_daily, name='cve_get_daily'),
     path('logout', views.logout_view, name='logout_api'),
 ]

@@ -8,6 +8,7 @@ from assets.assetsoperations import gather_all
 from rssapp.views import fetch_rss_feed
 from ransomwarelive.models import RansomwareliveVictim, RansomwareliveGroupsGroup, RansomwareliveGroupsLocation, RansomwareliveGroupsProfile
 from mlnids.models import NetworkFlow, RfPrediction
+from cvedata.cve_ops import get_load_all_cve_data
 import requests
 import nmap
 import csv
@@ -149,3 +150,13 @@ def rss_feed_update(request):
         return Response({'message': 'Gather RSS Feeds successfully'}, status=200)
     except Exception as e:
         return Response({f'error': 'Failed gather RSS Feed'}, status=500)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def cve_get_daily(request):
+    try:
+        # Call the function you want to execute
+        get_load_all_cve_data()
+        return Response({'message': 'Gather CVE successfully'}, status=200)
+    except Exception as e:
+        return Response({f'error': 'Failed gather CVE'}, status=500)

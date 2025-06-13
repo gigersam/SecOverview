@@ -29,6 +29,7 @@ urlpatterns = [
     path('backup/', include('backup.urls')),
     path('ipcheck/', include('ipcheck.urls')),
     path('chat/', include('chat.urls')),
+    path('cve/', include('cvedata.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('dns/', include('dnsops.urls')),
     path('mlnids/', include('mlnids.urls')),

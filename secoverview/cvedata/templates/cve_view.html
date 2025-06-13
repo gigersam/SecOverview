@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<br>
+<div class="p-4">
+    <div class="d-grid gap-4 d-md-flex"> 
+        <h1>CVE</h1>
+        <a href="{% url 'get_cve_data' %}"><button type="button" class="btn btn-dark">Update CVE Data</button></a>
+    </div>
+    <form class="d-flex">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    <table class="table table-hover">
+        <tr>
+            <td>Title</td>
+            <td>Country</td>
+            <td>Description</td>
+            <td>Action</td>
+        </tr>
+        {% for cve in cves %}
+        <tr>
+            <td>{{ victim.post_title }}</td>
+            <td>{{ victim.country }}</td>
+            <td>{{ victim.description }}</td>
+            <td><a href="{% url 'cve_details' cve.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<ul class="pagination">
+    {% if cves.has_previous %}
+    <li class="page-item">
+        <a class="page-link" href="?page=1">First</a>
+      </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ cves.previous_page_number }}">Previous</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="?page=1" tabindex="-1">First</a>
+      </li>
+    <li class="page-item disabled">
+      <a class="page-link" href="?page=1" tabindex="-1">Previous</a>
+    </li>
+    {% endif %}
+
+    {% if cves.number == 1 %}
+    <li class="page-item active"><a class="page-link" href="?page=1">1</a></li>
+    <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
+    <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
+    {% elif cves.number == cves.paginator.num_pages %}
+    <li class="page-item"><a class="page-link" href="?page={{ cves.previous_page_number|add:'-5' }}">{{ cves.previous_page_number|add:"-1" }}</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ cves.previous_page_number  }}">{{ cves.previous_page_number }}</a></li>
+    <li class="page-item active"><a class="page-link" href="?page={{ cves.number }}">{{ cves.number }} </a></li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="?page={{ cves.previous_page_number }}">{{ cves.previous_page_number }}</a></li>
+    <li class="page-item active">
+      <a class="page-link" href="?page={{ cves.number }}">{{ cves.number }}</a>
+    </li>
+    <li class="page-item"><a class="page-link" href="?page={{ cves.next_page_number }}">{{ cves.next_page_number }}</a></li>
+    {% endif %}
+
+    {% if cves.has_next %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ cves.next_page_number }}">Next</a>
+      </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ cves.paginator.num_pages }}">Last</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="?page={{ cves.paginator.num_pages }}">Next</a>
+      </li>
+    <li class="page-item disabled">
+      <a class="page-link" href="?page={{ cves.paginator.num_pages }}">Last</a>
+    </li>
+    {% endif %}
+</ul>
+
+
+{% endblock %}

@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'assets',
     'backup',
     'chat',
+    'cvedata',
     'dashboard',
     'dnsops',
     'ipcheck',
