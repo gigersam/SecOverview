@@ -4,8 +4,8 @@ from django.db import models
 class CveItem(models.Model):
     cve_id = models.CharField(max_length=50, primary_key=True)
     source_identifier = models.CharField(max_length=200)
-    published = models.DateTimeField()
-    last_modified = models.DateTimeField()
+    published = models.CharField(max_length=64)
+    last_modified = models.CharField(max_length=64)
     vuln_status = models.CharField(max_length=50)
     descriptions = models.JSONField()
     metrics = models.JSONField()

@@ -54,11 +54,11 @@ def load_cve_data(file_path):
                 'references': [{ 'url': r.get('url'), 'source': r.get('source') } for r in cve.get('references', [])],
             }
         )
-        if created:
-            print(f"Created CVE record {item.cve_id}")
-        else:
-            print(f"Updated CVE record {item.cve_id}")
-
+        #if created:
+        #    print(f"Created CVE record {item.cve_id}")
+        #else:
+        #    print(f"Updated CVE record {item.cve_id}")
+#
 def load_all_cve_data(directory_path='./cvedata/cve_data'):
     """
     Iterate through all JSON files in the given directory and load each into the database.
@@ -70,6 +70,6 @@ def load_all_cve_data(directory_path='./cvedata/cve_data'):
         load_cve_data(str(path))
 
 def get_load_all_cve_data():
-    #download_and_extract_cve_zips()
+    download_and_extract_cve_zips()
     load_all_cve_data()
 

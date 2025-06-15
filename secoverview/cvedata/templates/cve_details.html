@@ -4,7 +4,17 @@
 <br>
 <div class="d-grid gap-4 d-md-flex"> 
     <h1>CVE Detail</h1>
-    
+</div>
+
+<div>
+    <p><strong>CVE-ID</strong>: {{ cve.cve_id }}</p>
+    <p><strong>Description</strong>: {{ cve.descriptions.en}}</p>
+    <p><strong>Source-identifier</strong>: {{ cve.source_identifier }}</p>
+    <p><strong>Vulnerability-status</strong>: {{ cve.vuln_status }}</p>
+    <p><strong>Metrics</strong>: {{ cve.metrics }}</p>
+    <p><strong>Weaknesses</strong>: {{ cve.weaknesses}}</p>
+    <p><strong>References</strong>: {{ cve.references }}</p>
+    <p><strong>Configurations</strong>: {{ cve.configurations }}</p>
 </div>
 
 {% endblock %}

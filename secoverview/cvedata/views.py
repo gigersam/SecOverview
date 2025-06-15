@@ -15,7 +15,7 @@ def cve_view(request):
     if query == None or query == "":
         cves = CveItem.objects.order_by('-cve_id')
     else:
-        cves = CveItem.objects.filter(Q(cve_id__icontains=query) | Q(source_identifier__icontains=query) | Q(vuln_status__icontains=query) | Q(descriptions__icontains=query) | Q(metrics__icontains=query) | Q(weaknesses__icontains=query) | Q(references__icontains=query)).order_by('-id')
+        cves = CveItem.objects.filter(Q(cve_id__icontains=query) | Q(source_identifier__icontains=query) | Q(vuln_status__icontains=query) | Q(descriptions__icontains=query) | Q(metrics__icontains=query) | Q(weaknesses__icontains=query) | Q(references__icontains=query)).order_by('-cve_id')
     paginator = Paginator(cves, 5)
     page_number = request.GET.get('page')  # Get the page number from the URL query parameter
     page_obj = paginator.get_page(page_number)  # Get the appropriate page of blog posts
