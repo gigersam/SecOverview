@@ -36,6 +36,7 @@ urlpatterns = [
     path('nmap/', include('nmapapp.urls')),
     path('ransomwarelive/', include('ransomwarelive.urls')),
     path('rss/', include('rssapp.urls')),
+    path('web/', include('webops.urls')),
     path('yara/', include('yarascan.urls')),
 ]
 

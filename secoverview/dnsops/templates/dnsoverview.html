@@ -24,9 +24,9 @@
         <tr>
             <td>{{ record }}</td>
             <td>{% for obj in result %}
+                {% if record == "A" %}
                 <div class="d-grid gap-4 d-md-flex">
                     <p>{{ obj }}</p>
-                    {% if record == "A" %}
                     <form action="{% url 'nmapscan' %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" class="form-control" name="ip" id="id_IP" value="{{ obj }}">
@@ -37,8 +37,11 @@
                         {% csrf_token %}
                         <input type="hidden" class="form-control" name="ip" id="id_IP" value="{{ obj }}">
                         <button type="submit" class="btn btn-dark">Check IP</button>
-                    </form> {% endif %} {% endfor %}
-                </div>
+                    </form>
+                </div> 
+                {% else %}
+                <p>{{ obj }}</p>
+                {% endif %} {% endfor %}
             </td>
         </tr>
         {% endfor %}

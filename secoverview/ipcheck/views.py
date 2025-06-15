@@ -67,7 +67,7 @@ def ipcheck(request):
                         abuseipdb_data = None
             else:
                 abuseipdb_data = None
-            if misp_instance != None:
+            if misp_instance != None or misp_instance != "none":
                 cached_misp_data = IpcheckMISP.objects.filter(ip=ip).order_by('-created_at').first()
                 if cached_misp_data and cached_misp_data.created_at > timezone.now() - timedelta(hours=24):
                     misp_data = cached_misp_data.data

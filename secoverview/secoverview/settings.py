@@ -41,6 +41,7 @@ OLLAMA_API_MODEL = 'qwen3:latest'
 ABUSEIPDB_API_KEY = os.getenv('ABUSEIPDB_API_KEY')
 MISP_SERVER = os.getenv('MISP_SERVER')
 MISP_API_KEY = os.getenv('MISP_API_KEY')
+DNS_WORDLIST_DEFAULT = os.getenv('DNS_WORDLIST_DEFAULT', "")
 
 # Application definition
 
@@ -72,6 +73,7 @@ INSTALLED_APPS = [
     'nmapapp',
     'ransomwarelive',
     'rssapp',
+    'webops',
     'yarascan',
 ]
 
