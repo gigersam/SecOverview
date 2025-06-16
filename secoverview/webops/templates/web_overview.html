@@ -3,7 +3,133 @@
 {% block content %}
 <br>
 <h1>Web Ops</h1>
+<div class="p-4">
+    <form method="POST">
+        {% csrf_token %}
+        <label class="me-2" for="id_domain">Domain to check:</label>
+        <input type="text" class="form-control" name="domain" id="id_domain" required><br><br>
 
+        <button type="submit" class="btn btn-dark">Check</button>
+    </form>
+    <br>
+    {% if domain %}
+    <div class="d-grid gap-4 d-md-flex">
+        <h5><b>Domain:</b> {{ domain }}</h5>
+        <form action="{% url 'nmapscan' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" class="form-control" name="ip" id="id_IP_dst" value="{{ response.ip }}">
+            <input type="hidden" class="form-control" name="parameters" id="id_parameters" value="-sV -n -R -p 1-1024">
+            <button type="submit" class="btn btn-dark">Scan with NMAP</button>
+        </form>
+    </div>
+    <br>
+    {% endif %}
+    {% if webheaders %}
+    <h5><b>Scan Date:</b> {{ webheaders.scaned_at }}</h5>
+    <h5><b>Headers</b></h5>
+    <table class="table table-hover">
+        <tr>
+            <td><b>Header</b></td>
+            <td><b>Detected</b></td>
+            <td><b>Value</b></td>
+            <td><b>Issue</b></td>
+        </tr>
+        <tr>
+            <td>Strict-Transport-Security (HSTS)</td>
+            <td>{{ webheaders.hsts_detected }}</td>
+            <td>{{ webheaders.hsts_value }}</td>
+            <td>{{ webheaders.hsts_issues }}</td>
+        </tr>
+        <tr>
+            <td>X-Frame-Options</td>
+            <td>{{ webheaders.xframeoptions_detected }}</td>
+            <td>{{ webheaders.xframeoptions_value }}</td>
+            <td>{{ webheaders.xframeoptions_issues }}</td>
+        </tr>
+        <tr>
+            <td>X-Content-Type-Options</td>
+            <td>{{ webheaders.xcontenttypeoptions_detected }}</td>
+            <td>{{ webheaders.xcontenttypeoptions_value }}</td>
+            <td>{{ webheaders.xcontenttypeoptions_issues }}</td>
+        </tr>
+        <tr>
+            <td>Content-Security-Policy (CSP)</td>
+            <td>{{ webheaders.csp_detected }}</td>
+            <td>{{ webheaders.csp_value }}</td>
+            <td>{{ webheaders.csp_issues }}</td>
+        </tr>
+        <tr>
+            <td>Referrer-Policy</td>
+            <td>{{ webheaders.refferrerpolicy_detected }}</td>
+            <td>{{ webheaders.refferrerpolicy_value }}</td>
+            <td>{{ webheaders.refferrerpolicy_issues }}</td>
+        </tr>
+        <tr>
+            <td>X-XSS-Protection</td>
+            <td>{{ webheaders.xssprotection_detected }}</td>
+            <td>{{ webheaders.xssprotection_value }}</td>
+            <td>{{ webheaders.xssprotection_issues }}</td>
+        </tr>
+        <tr>
+            <td>Permissions-Policy</td>
+            <td>{{ webheaders.permissionspolicy_detected }}</td>
+            <td>{{ webheaders.permissionspolicy_value }}</td>
+            <td>{{ webheaders.permissionspolicy_issues }}</td>
+        </tr>
+        <tr>
+            <td>Clear-Site-Data</td>
+            <td>{{ webheaders.clearsite_detected }}</td>
+            <td>{{ webheaders.clearsite_value }}</td>
+            <td>{{ webheaders.clearsite_issues }}</td>
+        </tr>
+        <tr>
+            <td>Cross-Origin-Opener-Policy (COOP)</td>
+            <td>{{ webheaders.crossoriginopenerpolicy_detected }}</td>
+            <td>{{ webheaders.crossoriginopenerpolicy_value }}</td>
+            <td>{{ webheaders.crossoriginopenerpolicy_issues }}</td>
+        </tr>
+        <tr>
+            <td>Cross-Origin-Embedder-Policy (COEP)</td>
+            <td>{{ webheaders.crossoriginembedderpolicy_detected }}</td>
+            <td>{{ webheaders.crossoriginembedderpolicy_value }}</td>
+            <td>{{ webheaders.crossoriginembedderpolicy_issues }}</td>
+        </tr>
+    </table>
+    <br>
+    {% endif %}
+
+    {% if crt_result %}
+    <h1>Crtsh Result</h1>
+    <table class="table table-hover">
+        <tr>
+            <td><b>Result</b></td>
+        </tr>
+        {% for result in crt_result %}
+        <tr>
+            <td>{{ result.result }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    {% endif %}
+
+    {% if webtechfingerprint %}
+    <h1>Web Tech Fingerprinting Result</h1>
+    <table class="table table-hover">
+        <tr>
+            <td><b>Technologie</b></td>
+            <td><b>Version</b></td>
+        </tr>
+        {% for result in webtechfingerprint %}
+        <tr>
+            <td>{{ result.technologie }}</td>
+            <td>{{ result.version }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    {% endif %}
+</div>
 
 
 {% endblock %}

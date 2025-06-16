@@ -2,6 +2,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
+from ..models import WebTechFingerprinting_Scan, WebTechFingerprinting_Results
 
 FINGERPRINTS = [
     # Headers
@@ -93,6 +94,8 @@ def analyze_technologies(url):
         elif version and found_tech[name] == "Detected": # Update if we find a specific version later
             found_tech[name] = version
 
+    if not url.startswith(("http://", "https://")):
+        url = "https://" + url
 
     # --- 1. Analyze main page ---
     print(f"[*] Analyzing main page: {url}")
@@ -190,4 +193,20 @@ def analyze_technologies(url):
             # print(f"[!] Error processing fingerprint for {name} ({fp_type}): {e}")
             continue # Skip to next fingerprint if one causes an error
 
-    return found_tech
+    if found_tech:
+        webtechfingerprintscan = WebTechFingerprinting_Scan.objects.create(domain=url)
+        for tech, version in found_tech.items():
+            if version and version != "Detected":
+                WebTechFingerprinting_Results.objects.create(
+                    domain=webtechfingerprintscan,
+                    technologie=tech,
+                    version=version
+                )
+            else:
+                WebTechFingerprinting_Results.objects.create(
+                    domain=webtechfingerprintscan,
+                    technologie=tech,
+                    version=None
+                )
+
+    return webtechfingerprintscan

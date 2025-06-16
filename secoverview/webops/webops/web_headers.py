@@ -3,6 +3,7 @@ import urllib.request
 import ssl
 import socket
 from urllib.error import URLError, HTTPError
+from ..models import WebHeaderCheck
 
 # Recommended minimum HSTS max-age (e.g., 1 year = 31536000 seconds)
 RECOMMENDED_HSTS_MAX_AGE = 31536000 # 1 year
@@ -28,17 +29,17 @@ def check_security_headers(url_to_check):
     Fetches a URL and checks for common OWASP security headers.
     """
     results = {}
-    print(f"[*] Checking security headers for: {url_to_check}")
+    #print(f"[*] Checking security headers for: {url_to_check}")
 
     # Ensure we are checking HTTPS for HSTS and other relevant headers
     if not url_to_check.startswith("https://"):
-        print("    [~] Warning: URL does not start with https://. HSTS is only effective over HTTPS.")
-        print("    [~] Attempting to force HTTPS for the check.")
+        #print("    [~] Warning: URL does not start with https://. HSTS is only effective over HTTPS.")
+        #print("    [~] Attempting to force HTTPS for the check.")
         if url_to_check.startswith("http://"):
             url_to_check = "https://" + url_to_check[len("http://"):]
         else:
             url_to_check = "https://" + url_to_check
-        print(f"    [~] Checking: {url_to_check}")
+        #print(f"    [~] Checking: {url_to_check}")
 
 
     # Create a default SSL context (verifies certs by default)
@@ -142,7 +143,7 @@ def check_security_headers(url_to_check):
             # 6. Permissions-Policy (formerly Feature-Policy)
             pp_value = headers.get('Permissions-Policy') or headers.get('Feature-Policy') # Check both
             policy_name = 'Permissions-Policy' if headers.get('Permissions-Policy') else 'Feature-Policy'
-            results[policy_name] = {'present': bool(pp_value), 'value': pp_value, 'issues': []}
+            results['Permissions-Policy'] = {'present': bool(pp_value), 'value': pp_value, 'issues': []}
             if not pp_value:
                  results[policy_name]['issues'].append(
                     "Header not set. Useful for restricting browser feature access."
@@ -185,7 +186,6 @@ def check_security_headers(url_to_check):
             else:
                 results['Cross-Origin-Embedder-Policy']['issues'].append("Header not set. Needed with COOP for full cross-origin isolation. Consider 'require-corp'.")
 
-
     except HTTPError as e:
         print(f"    [!] HTTP Error: {e.code} {e.reason}")
         if e.headers: # Print headers even on error if available
@@ -208,4 +208,41 @@ def check_security_headers(url_to_check):
     except Exception as e:
         print(f"    [!] An unexpected error occurred: {e}")
 
-    return results
+    if results:
+        webheaderobject = WebHeaderCheck.objects.create(
+            domain = url_to_check,
+            hsts_detected = results['Strict-Transport-Security']['present'],
+            hsts_value = results['Strict-Transport-Security']['value'],
+            hsts_issues = results['Strict-Transport-Security']['issues'], 
+            xframeoptions_detected = results['X-Frame-Options']['present'],
+            xframeoptions_value = results['X-Frame-Options']['value'],
+            xframeoptions_issues = results['X-Frame-Options']['issues'],
+            xcontenttypeoptions_detected = results['X-Content-Type-Options']['present'],
+            xcontenttypeoptions_value = results['X-Content-Type-Options']['value'],
+            xcontenttypeoptions_issues = results['X-Content-Type-Options']['issues'],
+            csp_detected = results['Content-Security-Policy']['present'],
+            csp_value = results['Content-Security-Policy']['value'],
+            csp_issues = results['Content-Security-Policy']['issues'],
+            refferrerpolicy_detected = results['Referrer-Policy']['present'],
+            refferrerpolicy_value = results['Referrer-Policy']['value'],
+            refferrerpolicy_issues = results['Referrer-Policy']['issues'],
+            xssprotection_detected = results['X-XSS-Protection']['present'],
+            xssprotection_value = results['X-XSS-Protection']['value'],
+            xssprotection_issues = results['X-XSS-Protection']['issues'],
+            permissionspolicy_detected = results['Permissions-Policy']['present'],
+            permissionspolicy_value = results['Permissions-Policy']['value'],
+            permissionspolicy_issues = results['Permissions-Policy']['issues'],
+            clearsite_detected = results['Clear-Site-Data']['present'],
+            clearsite_value = results['Clear-Site-Data']['value'],
+            clearsite_issues = results['Clear-Site-Data']['issues'],
+            crossoriginopenerpolicy_detected = results['Cross-Origin-Opener-Policy']['present'],
+            crossoriginopenerpolicy_value = results['Cross-Origin-Opener-Policy']['value'],
+            crossoriginopenerpolicy_issues = results['Cross-Origin-Opener-Policy']['issues'],
+            crossoriginembedderpolicy_detected = results['Cross-Origin-Embedder-Policy']['present'],
+            crossoriginembedderpolicy_value = results['Cross-Origin-Embedder-Policy']['value'],
+            crossoriginembedderpolicy_issues = results['Cross-Origin-Embedder-Policy']['issues']
+        )
+    else:
+        webheaderobject = None
+
+    return webheaderobject

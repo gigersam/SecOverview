@@ -1,6 +1,6 @@
 import requests
 import json
-
+from ..models import CRTSHScan, CRTSHResult
 # --- Configuration ---
 CRTSH_URL = "https://crt.sh/"
 DEFAULT_TIMEOUT = 30  # seconds for the HTTP request
@@ -20,7 +20,7 @@ def query_crtsh(domain, timeout=DEFAULT_TIMEOUT):
         'User-Agent': 'Python CrtSh Subdomain Querier/1.0'
     }
 
-    print(f"[*] Querying crt.sh for: {query_domain}")
+    #print(f"[*] Querying crt.sh for: {query_domain}")
 
     try:
         response = requests.get(url, headers=headers, timeout=timeout)
@@ -33,14 +33,14 @@ def query_crtsh(domain, timeout=DEFAULT_TIMEOUT):
             certs = response.json()
         except json.JSONDecodeError:
             if response.text.strip() == "":
-                print("[*] crt.sh returned an empty response (no certificates found).")
+                #print("[*] crt.sh returned an empty response (no certificates found).")
                 return found_subdomains
             else:
-                print(f"[!] Failed to decode JSON from crt.sh. Response was: {response.text[:200]}...")
+                #print(f"[!] Failed to decode JSON from crt.sh. Response was: {response.text[:200]}...")
                 return found_subdomains # Or raise an error
 
         if not isinstance(certs, list):
-            print(f"[!] Unexpected response format from crt.sh (expected a list, got {type(certs)}).")
+            #print(f"[!] Unexpected response format from crt.sh (expected a list, got {type(certs)}).")
             return found_subdomains
 
         for cert_entry in certs:
@@ -75,15 +75,12 @@ def query_crtsh(domain, timeout=DEFAULT_TIMEOUT):
     except Exception as e:
         print(f"[!] An unexpected error occurred: {e}")
 
-    # Filter out the base domain itself if we only want true subdomains
-    # and also remove duplicates that might arise from *.example.com vs example.com
-    # after stripping *.
-    final_subdomains = set()
+    currentcrtscan = CRTSHScan.objects.create(domain=query_domain)
     for sub in found_subdomains:
-        final_subdomains = set()
         for sub_name in found_subdomains:
-            # Add all names found that are related to the domain
-            # This includes the domain itself, direct subdomains, and wildcard entries.
-            final_subdomains.add(sub_name)
+            CRTSHResult.objects.get_or_create(
+                domain=currentcrtscan,
+                result=sub_name
+            )
 
-    return sorted(list(final_subdomains))
+    return currentcrtscan
