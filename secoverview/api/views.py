@@ -5,10 +5,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 from assets.assetsoperations import gather_all
+from dnsops.dnsops import enumerate_dns_records
 from rssapp.views import fetch_rss_feed
 from ransomwarelive.models import RansomwareliveVictim, RansomwareliveGroupsGroup, RansomwareliveGroupsLocation, RansomwareliveGroupsProfile
 from mlnids.models import NetworkFlow, RfPrediction
 from cvedata.cve_ops import get_load_all_cve_data
+from webops.models import CRTSHResult, WebTechFingerprinting_Results
+from webops.webops.crt_sh_ops import query_crtsh
+from webops.webops.web_headers import check_security_headers
+from webops.webops.web_tech_fingerprinting import analyze_technologies
+from .serializers import CRTSHResultSerializer, WebHeaderCheckSerializer, WebTechFingerprinting_ResultsSerializer
 import requests
 import nmap
 import csv
@@ -160,3 +166,76 @@ def cve_get_daily(request):
         return Response({'message': 'Gather CVE successfully'}, status=200)
     except Exception as e:
         return Response({f'error': 'Failed gather CVE'}, status=500)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_crtsh_get(request):
+    domain = request.GET.get('q')
+    print(f'query domain: {domain}')
+    # Check if a query parameter is provided in the URL
+    if not domain:
+        return Response({'message': 'No query parameter provided'}, status=400)
+    
+    results = CRTSHResult.objects.filter(domain=query_crtsh(domain))
+    serializer = CRTSHResultSerializer(results, many=True)
+    return Response(serializer.data, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_webheaders_get(request):
+    domain = request.GET.get('q')
+    print(f'query domain: {domain}')
+    # Check if a query parameter is provided in the URL
+    if not domain:
+        return Response({'message': 'No query parameter provided'}, status=400)
+    
+    results = check_security_headers(domain)
+    serializer = WebHeaderCheckSerializer(results, many=False)
+    return Response(serializer.data, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_webfingerprinting_get(request):
+    domain = request.GET.get('q')
+    print(f'query domain: {domain}')
+    # Check if a query parameter is provided in the URL
+    if not domain:
+        return Response({'message': 'No query parameter provided'}, status=400)
+    
+    results = WebTechFingerprinting_Results.objects.filter(domain=analyze_technologies(domain))
+    serializer = WebTechFingerprinting_ResultsSerializer(results, many=True)
+    return Response(serializer.data, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_weball_get(request):
+    domain = request.GET.get('q')
+    print(f'query domain: {domain}')
+    # Check if a query parameter is provided in the URL
+    if not domain:
+        return Response({'message': 'No query parameter provided'}, status=400)
+    
+    results_certinfo = CRTSHResult.objects.filter(domain=query_crtsh(domain))
+    results_securityheaders = check_security_headers(domain)
+    results_webtechfingerprinting = WebTechFingerprinting_Results.objects.filter(domain=analyze_technologies(domain))
+    
+    data = {
+        'certinfo': CRTSHResultSerializer(results_certinfo, many=True).data,
+        'securityheaders': WebHeaderCheckSerializer(results_securityheaders, many=False).data,
+        'webtechfingerprinting': WebTechFingerprinting_ResultsSerializer(results_webtechfingerprinting, many=True).data
+    }
+
+    return Response(data, status=200)
+
+@api_view(['GET'])
+#@permission_classes([IsAuthenticated])
+def api_dns_enumerate(request):
+    domain = request.GET.get('q')
+    print(f'query domain: {domain}')
+    # Check if a query parameter is provided in the URL
+    if not domain:
+        return Response({'message': 'No query parameter provided'}, status=400)
+    
+    subdomain_results = enumerate_dns_records(domain=domain)
+    return Response(subdomain_results, status=200)
+

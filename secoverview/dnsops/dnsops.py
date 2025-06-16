@@ -32,6 +32,7 @@ def enumerate_dns_records(domain):
     for subdomain in subdomain_list:
         full_domain = f"{subdomain}.{domain}"
         subdomain_records = {}
+        query = DNSQuery.objects.create(domain=full_domain)
 
         for record_type in DNSRecord.RECORD_TYPES:
             record_type = record_type[0]

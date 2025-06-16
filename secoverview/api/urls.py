@@ -12,5 +12,10 @@ urlpatterns = [
     path('mlnids/upload', views.mlnids_upload_csv, name='mlnids_upload_csv'),
     path('assets/gather/all', views.assets_gather_all, name='assets_gather_all'),
     path('cve/daily/get', views.cve_get_daily, name='cve_get_daily'),
+    path('dns/enumerate', views.api_dns_enumerate, name='api_dns_enumerate'),
+    path('web/crt/get', views.api_crtsh_get, name='api_crtsh_get'),
+    path('web/webheaders/get', views.api_webheaders_get, name='api_webheaders_get'),
+    path('web/webtechfingerprinting/get', views.api_webfingerprinting_get, name='api_webfingerprinting_get'),
+    path('web/all/get', views.api_weball_get, name='api_weball_get'),
     path('logout', views.logout_view, name='logout_api'),
 ]
