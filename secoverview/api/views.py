@@ -10,14 +10,15 @@ from rssapp.views import fetch_rss_feed
 from ransomwarelive.models import RansomwareliveVictim, RansomwareliveGroupsGroup, RansomwareliveGroupsLocation, RansomwareliveGroupsProfile
 from mlnids.models import NetworkFlow, RfPrediction
 from cvedata.cve_ops import get_load_all_cve_data
+from ransomwarelive.ransomwareliveops import fetch_ransomwarelive_victims, fetch_ransomwarelive_groups
 from webops.models import CRTSHResult, WebTechFingerprinting_Results
 from webops.webops.crt_sh_ops import query_crtsh
 from webops.webops.web_headers import check_security_headers
 from webops.webops.web_tech_fingerprinting import analyze_technologies
 from ipcheck.views import get_external_ip_info
+from nmapapp.nmapops import execute_nmap_scan_db
 from .serializers import CRTSHResultSerializer, WebHeaderCheckSerializer, WebTechFingerprinting_ResultsSerializer
 import requests
-import nmap
 import csv
 import io
 
@@ -39,28 +40,20 @@ def test():
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def fetch_victims(request):
-    response = requests.get('https://data.ransomware.live/victims.json')
-    if response.status_code == 200:
-        data = response.json()
-        for victim in data:
-            RansomwareliveVictim.add_post(victim)
+    result = fetch_ransomwarelive_victims()
+    if result:
         return Response({'message': 'Victims data fetched and added successfully'}, status=200)
-    return Response({'error': 'Failed to fetch victims data'}, status=500)
+    else:
+        return Response({'error': 'Failed to fetch victims data'}, status=500)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def fetch_groups(request):
-    response = requests.get('https://data.ransomware.live/groups.json')
-    if response.status_code == 200:
-        data = response.json()
-        for group_data in data:
-            group, created = RansomwareliveGroupsGroup.objects.get_or_create(name=group_data['name'])
-            for location in group_data.get('locations', []):
-                RansomwareliveGroupsLocation.objects.get_or_create(fqdn=location['fqdn'], group=group)
-            for profile in group_data.get('profile', []):
-                RansomwareliveGroupsProfile.objects.get_or_create(link=profile, group=group)
+    result = fetch_ransomwarelive_groups()
+    if result:
         return Response({'message': 'Groups data fetched and added successfully'}, status=200)
-    return Response({'error': 'Failed to fetch groups data'}, status=500)
+    else:
+        return Response({'error': 'Failed to fetch groups data'}, status=500)
 
 
 @api_view(['POST'])
@@ -74,18 +67,11 @@ def nmap_scan(request):
     ip = request.data.get('ip', 'Guest')
     parameters = request.data.get('parameters', None)
 
-    scanner = nmap.PortScanner()
-    try:
-        # Scan the subnet with service detection
-        scanner.scan(hosts=ip, arguments=parameters)
-        combined = []
-        for host in scanner.all_hosts():
-            combined.append(scanner[host])
+    combined = execute_nmap_scan_db(ip, parameters)
 
-        return Response(combined, status=200)
+    return Response(combined, status=200)
 
-    except Exception as e:
-        return Response(e, status=500)
+    
 
 
 @api_view(['POST'])

@@ -5,8 +5,8 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db.models import Q
 from django.conf import settings
-from .models import Nmapscan, NmapAssets, AssetsNmapscan
-from api.localinteraction.localinteraction import local_api_request
+from .models import Nmapscan, NmapAssets
+from .nmapops import execute_nmap_scan_db
 import json
 
 localinteractionurl = settings.LOCAL_INTERACTION_URL
@@ -35,19 +35,7 @@ def scan(request):
         ip = request.POST.get('ip')
         parameters = request.POST.get('parameters')
 
-        api_url = localinteractionurl + "/api/nmap/scan"
-        data = {"ip": ip, "parameters": parameters}
-        json_data = local_api_request(api_url=api_url, data=data)
-        json_data_dump = json.dumps(json_data, indent=4)
-        scanconfig = Nmapscan.objects.create(data=json_data_dump, ip=ip, parameters=parameters)
-
-        for data_obj in json_data:
-            ip_address = data_obj.get("addresses", {}).get("ipv4")
-            hostnames = data_obj.get("hostnames", [])
-            hostname = hostnames[0].get("name") if hostnames else ""
-
-            asset = NmapAssets.objects.get_or_create(hostname=hostname, ip_address=ip_address, json_data=json.dumps(data_obj, indent=4), defaults={"added_by_scan": scanconfig})
-            AssetsNmapscan.objects.create(assets=asset[0], assets_json_data=data_obj, nmapscan=scanconfig)
+        execute_nmap_scan_db(ip, parameters)
 
         assets = NmapAssets.objects.order_by('-id')[:5]
         scans = Nmapscan.objects.order_by('-id')[:5]

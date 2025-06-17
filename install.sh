@@ -78,13 +78,6 @@ mkdir media/scans
 mkdir media/yararules
 mkdir media/ragpool
 
-cat << EOF > api/localinteraction/config.py
-CREDENTIALS = {
-    "username": "admin",
-    "password": "$DJANGO_ADMIN_PASSWORD"
-}
-EOF
-
 cat << EOF > .env
 ABUSEIPDB_API_KEY=your_api_key_here
 MISP_SERVER=misp_server_address_here

@@ -5,8 +5,8 @@ from django.conf import settings
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from .models import RansomwareliveGroupsGroup, RansomwareliveVictim
+from .ransomwareliveops import fetch_ransomwarelive_groups, fetch_ransomwarelive_victims
 from django.db.models import Q
-from api.localinteraction.localinteraction import local_api_request_get
 
 localinteractionurl = settings.LOCAL_INTERACTION_URL
 
@@ -32,10 +32,8 @@ def ransomwarelive(request):
 def ransomwareliveupdate(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
-    api_url = localinteractionurl + "/api/ransomwarelive/groups/fetch"
-    groups = local_api_request_get(api_url=api_url)
-    api_url = localinteractionurl + "/api/ransomwarelive/victims/fetch"
-    groups = local_api_request_get(api_url=api_url)
+    fetch_ransomwarelive_groups()
+    fetch_ransomwarelive_victims()
     return redirect(ransomwarelive)
 
 @login_required
