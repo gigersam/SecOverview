@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ComputeAssets, ComputeAssetsNetworkPorts, ComputeAssetsNetworkDetection
+from .models import ComputeAssets, ComputeAssetsNetworkPorts, ComputeAssetsNetworkDetection, ComputeAssetsCVE
 
 # Register your models here.
 
@@ -38,3 +38,12 @@ class ComputeAssetsNetworkDetectionAdmin(admin.ModelAdmin):
     ]
     search_fields = ['mlnids_detection', 'compute_assets']
     list_filter = ['detection_severity']
+
+@admin.register(ComputeAssetsCVE)
+class ComputeAssetsCVEAdmin(admin.ModelAdmin):
+    list_display = [
+        'compute_assets', 
+        'cve', 
+    ]
+    search_fields = ['cve', 'compute_assets']
+    list_filter = ['compute_assets']

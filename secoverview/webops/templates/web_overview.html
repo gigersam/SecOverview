@@ -119,11 +119,13 @@
         <tr>
             <td><b>Technologie</b></td>
             <td><b>Version</b></td>
+            <td><b>Actions</b></td>
         </tr>
         {% for result in webtechfingerprint %}
         <tr>
             <td>{{ result.technologie }}</td>
             <td>{{ result.version }}</td>
+            <td><a href="{% url 'cve_view' %}?search={{ result.technologie }}" class="btn btn-dark">Search CVE</a></td>
         </tr>
         {% endfor %}
     </table>

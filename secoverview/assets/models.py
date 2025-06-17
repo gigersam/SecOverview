@@ -1,6 +1,7 @@
 from django.db import models
 from nmapapp.models import NmapAssets, Nmapscan, AssetsNmapscan
 from mlnids.models import NetworkFlow
+from cvedata.models import CveItem
 
 # Create your models here.
 
@@ -38,3 +39,8 @@ class ComputeAssetsNetworkDetection(models.Model):
     
     def __str__(self):
         return str(f"MLNIDS Detection: {self.mlnids_detection}, Severity: {self.detection_severity}")
+
+class ComputeAssetsCVE(models.Model):
+    compute_assets = models.ForeignKey(ComputeAssets, on_delete=models.CASCADE)
+    cve = models.ForeignKey(CveItem, on_delete=models.CASCADE)
+    detected_date = models.DateTimeField(auto_now_add=True)

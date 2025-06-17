@@ -17,5 +17,7 @@ urlpatterns = [
     path('web/webheaders/get', views.api_webheaders_get, name='api_webheaders_get'),
     path('web/webtechfingerprinting/get', views.api_webfingerprinting_get, name='api_webfingerprinting_get'),
     path('web/all/get', views.api_weball_get, name='api_weball_get'),
+    path('ipcheck/check', views.api_ipcheck_get, name='api_ipcheck_get'),
     path('logout', views.logout_view, name='logout_api'),
 ]
+

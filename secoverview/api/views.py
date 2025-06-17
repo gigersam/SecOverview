@@ -14,6 +14,7 @@ from webops.models import CRTSHResult, WebTechFingerprinting_Results
 from webops.webops.crt_sh_ops import query_crtsh
 from webops.webops.web_headers import check_security_headers
 from webops.webops.web_tech_fingerprinting import analyze_technologies
+from ipcheck.views import get_external_ip_info
 from .serializers import CRTSHResultSerializer, WebHeaderCheckSerializer, WebTechFingerprinting_ResultsSerializer
 import requests
 import nmap
@@ -228,7 +229,7 @@ def api_weball_get(request):
     return Response(data, status=200)
 
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def api_dns_enumerate(request):
     domain = request.GET.get('q')
     print(f'query domain: {domain}')
@@ -239,3 +240,23 @@ def api_dns_enumerate(request):
     subdomain_results = enumerate_dns_records(domain=domain)
     return Response(subdomain_results, status=200)
 
+@api_view(['GET'])
+#@permission_classes([IsAuthenticated])
+def api_ipcheck_get(request):
+    ip = request.GET.get('q')
+    print(f'query domain: {ip}')
+    if not ip:
+        return Response({'message': 'No query parameter provided'}, status=400)
+    
+    bgpviewdata, abuseipdb_data, misp_data  = get_external_ip_info(ip=ip)
+    if not bgpviewdata == None:
+        bgpviewdata = bgpviewdata['data']
+    if not abuseipdb_data == None:
+        abuseipdb_data = abuseipdb_data['data']
+
+    data = {
+        'bgpview': bgpviewdata,
+        'abuseipdb': abuseipdb_data,
+        'misp': misp_data
+    }
+    return Response(data, status=200)

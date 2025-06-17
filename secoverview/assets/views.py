@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from .assetsoperations import gather_all, gather_nmap_assets_infos, gather_mlnids_assets_info
-from .models import ComputeAssets, ComputeAssetsNetworkPorts, ComputeAssetsNetworkDetection
+from .models import ComputeAssets, ComputeAssetsNetworkPorts, ComputeAssetsNetworkDetection, ComputeAssetsCVE
 
 @login_required
 def assetsoverview(request):
@@ -46,6 +46,7 @@ def assetview(request, id):
     asset = ComputeAssets.objects.get(id=id)
     ports = ComputeAssetsNetworkPorts.objects.filter(asset=asset)
     network_detection = ComputeAssetsNetworkDetection.objects.filter(compute_assets=asset)
+    cves = ComputeAssetsCVE.objects.filter(compute_assets=asset)
     contextstring = f"This Asset {(asset.context_string() if asset != None else 'No information available')} and the following ports detected: {ports} and the following network detections: {network_detection}"
     return render(
         request,
@@ -56,6 +57,7 @@ def assetview(request, id):
             'asset':asset,
             'ports':ports,
             'network_detection':network_detection,
+            'cves':cves,
             'chatcontext':contextstring,
         }
     )

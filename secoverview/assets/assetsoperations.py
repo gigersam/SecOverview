@@ -1,6 +1,8 @@
+from django.db.models import Q
 from nmapapp.models import NmapAssets, Nmapscan, AssetsNmapscan
 from mlnids.models import NetworkFlow
 from .models import *
+from nmapapp.nmapops import parse_cpe_info
 import json
 import ipaddress
 
@@ -61,7 +63,43 @@ def gather_mlnids_assets_info():
                 detection_severity=calculate_confidence_level,
                 compute_assets=computeassets,
             )
+
+def gather_assets_cve_infos():
+    computeassets = ComputeAssets.objects.all()
+    for asset in computeassets:
+        network_ports = ComputeAssetsNetworkPorts.objects.filter(asset=asset)
+        for port in network_ports:
+            cves = []
+            type, vendor, product, version, update, edition, language = parse_cpe_info(port.cpe)
+            if type == None and vendor == None and product == None and version == None and update == None and edition == None and language == None:
+                continue
+            query = Q()
+
+            if product is not None:
+                query |= Q(cve_id__icontains=product)
+                query |= Q(source_identifier__icontains=product)
+                query |= Q(vuln_status__icontains=product)
+                query |= Q(descriptions__icontains=product)
+                query |= Q(metrics__icontains=product)
+                query |= Q(weaknesses__icontains=product)
+                query |= Q(references__icontains=product)
+
+            if port.product is not None:
+                query |= Q(cve_id__icontains=port.product)
+                query |= Q(source_identifier__icontains=port.product)
+                query |= Q(vuln_status__icontains=port.product)
+                query |= Q(descriptions__icontains=port.product)
+                query |= Q(metrics__icontains=port.product)
+                query |= Q(weaknesses__icontains=port.product)
+                query |= Q(references__icontains=port.product)
             
+            cves = CveItem.objects.filter(query).order_by('-cve_id')
+
+            for cve in cves:
+                ComputeAssetsCVE.objects.get_or_create(compute_assets=asset, cve=cve)
+ 
 def gather_all():
     gather_nmap_assets_infos()
     gather_mlnids_assets_info()
+    gather_assets_cve_infos()
+

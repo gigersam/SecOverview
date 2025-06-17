@@ -86,6 +86,28 @@
         </table>
     </div>
     {% endif %}
+
+    {% if cves %}
+    <h5>Possible CVE</h5>
+    <div class="d-grid gap-4 d-md-flex">
+        <table class="table table-hover">
+            <tr>
+                <th>CVE</th>
+                <th>Source</th>
+                <th>Published</th>
+                <th>Description</th>
+            </tr>
+            {% for cve in cves %}
+            <tr>
+                <td><a href="{% url 'cve_details' id=cve.cve_id %}" class="btn btn-dark">{{ cve.cve_id }}</a></td>
+                <td>{{ cve.cve.source_identifier }}</td>
+                <td>{{ cve.cve.published|slice:":19" }}</td>
+                <td>{{ cve.cve.descriptions.en|slice:":255" }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}
