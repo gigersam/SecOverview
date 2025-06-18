@@ -4,9 +4,6 @@
 # Version: 1.0
 # Description: Installation and Start of the SecOverview App
 
-# api localinteraction config.py creation
-# media dir creation
-
 GITHUB_REPO="https://github.com/gigersam/SecOverview.git"  # Change this to your repo
 PROJECT_NAME="secoverview"
 VENV_NAME="venv"
@@ -16,7 +13,7 @@ DJANGO_APP_DIR="/home/$DJANGO_USER/$PROJECT_NAME/$PROJECT_NAME"
 DJANGO_ADMIN_PASSWORD=$(tr -dc 'A-Za-z0-9!@#$%^&*()_+' < /dev/urandom | head -c 12)
 DJANGO_SECRET_KEY=$(tr -dc 'A-Za-z0-9!@#$%^&*()_+' < /dev/urandom | head -c 48)
 LLM_MODEL="qwen3:latest"
-LOCAL_INTERACTION_URL="http://localhost"
+LOCAL_INTERACTION_URL="https://localhost"
 
 # Update system packages
 echo "Updating system packages..."
@@ -79,14 +76,22 @@ mkdir media/yararules
 mkdir media/ragpool
 
 cat << EOF > .env
+DEBUG=False
+SECRET_KEY=${DJANGO_SECRET_KEY}
+
+OLLAMA_API_URL=http://localhost:11434
+OLLAMA_API_MODEL=${LLM_MODEL}
+
 ABUSEIPDB_API_KEY=your_api_key_here
 MISP_SERVER=misp_server_address_here
 MISP_API_KEY=your_api_key_here
+
+DNS_WORDLIST_DEFAULT=
 EOF
 
 # Apply migrations
 echo "Applying migrations..."
-source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py makemigrations accounts api assets backup chat dashboard dnsops ipcheck main mlnids nmapapp ransomwarelive rssapp yarascan
+source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py makemigrations accounts api assets backup chat cvedata dashboard dnsops ipcheck main mlnids nmapapp ransomwarelive rssapp webops yarascan
 source $DJANGO_DIR/$VENV_NAME/bin/activate && python manage.py migrate
 
 # Create a superuser (optional)
@@ -103,9 +108,6 @@ unset DJANGO_SUPERUSER_EMAIL
 # Allow all hosts (for local development)
 echo "Configuring Django settings..."
 sed -i "s/ALLOWED_HOSTS = \[\]/ALLOWED_HOSTS = ['*']/" $PROJECT_NAME/settings.py
-sed -i "s/SECRET_KEY = 'KEY_VALUE'/SECRET_KEY = '${DJANGO_SECRET_KEY}'/" $PROJECT_NAME/settings.py
-sed -i "s/OLLAMA_API_MODEL = 'qwen3:latest'/OLLAMA_API_MODEL = '${$LLM_MODEL}'/" $PROJECT_NAME/settings.py
-sed -i "s/LOCAL_INTERACTION_URL = 'http://localhost:8000'/OLLAMA_API_MODEL = '${$LOCAL_INTERACTION_URL}'/" $PROJECT_NAME/settings.py
 
 # Collect static files
 echo "Collecting static files..."
