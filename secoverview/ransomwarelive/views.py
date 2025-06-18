@@ -8,8 +8,6 @@ from .models import RansomwareliveGroupsGroup, RansomwareliveVictim
 from .ransomwareliveops import fetch_ransomwarelive_groups, fetch_ransomwarelive_victims
 from django.db.models import Q
 
-localinteractionurl = settings.LOCAL_INTERACTION_URL
-
 @login_required
 def ransomwarelive(request):
     """Renders the about page."""

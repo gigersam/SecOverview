@@ -25,7 +25,8 @@ def cve_view(request):
         {
             'title':'CVE',
             'year':datetime.now().year,
-            'cves':page_obj
+            'cves':page_obj,
+            'chatcontext':"Displays the all CVE's and allow searching them."
         }
     )
 
@@ -46,6 +47,7 @@ def cve_details(request, id):
         {
             'title':'CVE Details',
             'year':datetime.now().year,
-            'cve':cve
+            'cve':cve,
+            'chatcontext':f"This view shows the following CVE: {cve}"
         }
     )

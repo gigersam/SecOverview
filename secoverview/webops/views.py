@@ -26,7 +26,7 @@ def web_overview(request):
                 'webheaders':headers,
                 'crt_result':crt_result,
                 'webtechfingerprint':webtechfingerprint,
-                'chatcontext':"This page "
+                'chatcontext':f"This page show the following data: {domain} - {headers} - {crt_result} - {webtechfingerprint} "
             })
     else:
         return render(
@@ -39,5 +39,5 @@ def web_overview(request):
                 'webheaders':None,
                 'crt_scan_result':None,
                 'webtechfingerprint':None,
-                'chatcontext':"This page "
+                'chatcontext':"This page allows to querry a domain for its web technologies, cert subdomains history and its http security headers."
             })

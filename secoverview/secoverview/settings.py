@@ -26,17 +26,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'KEY_VALUE'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', False)
 
 ALLOWED_HOSTS = []
 
-LOCAL_INTERACTION_URL = 'http://localhost:8000'
-
-OLLAMA_API_URL = 'http://localhost:11434'
-OLLAMA_API_MODEL = 'qwen3:latest'
+OLLAMA_API_URL = os.getenv('OLLAMA_API_URL', 'http://localhost:11434')
+OLLAMA_API_MODEL = os.getenv('OLLAMA_API_MODEL', 'qwen3:latest')
 
 ABUSEIPDB_API_KEY = os.getenv('ABUSEIPDB_API_KEY')
 MISP_SERVER = os.getenv('MISP_SERVER')

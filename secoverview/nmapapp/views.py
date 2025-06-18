@@ -9,8 +9,6 @@ from .models import Nmapscan, NmapAssets
 from .nmapops import execute_nmap_scan_db
 import json
 
-localinteractionurl = settings.LOCAL_INTERACTION_URL
-
 @login_required
 def overview(request):
     """Renders the about page."""
