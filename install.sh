@@ -131,7 +131,7 @@ After=network.target
 User=$DJANGO_USER
 Group=www-data
 WorkingDirectory=$DJANGO_APP_DIR
-ExecStart=$DJANGO_DIR/$VENV_NAME/bin/gunicorn --workers 3 --bind unix:$DJANGO_DIR/$PROJECT_NAME.sock $PROJECT_NAME.wsgi:application --timeout 600
+ExecStart=$DJANGO_DIR/$VENV_NAME/bin/gunicorn --workers 3 --bind unix:$DJANGO_DIR/$PROJECT_NAME.sock $PROJECT_NAME.wsgi:application --timeout 1200
 
 [Install]
 WantedBy=multi-user.target
@@ -160,20 +160,38 @@ sudo systemctl daemon-reload
 sudo systemctl start $PROJECT_NAME
 sudo systemctl enable $PROJECT_NAME
 
-
 # Create an Nginx configuration file
 echo "Setting up Nginx..."
+sudo mkdir -p /etc/nginx/ssl
+sudo openssl req -x509 -nodes -days 3650 \
+  -newkey rsa:2048 \
+  -keyout /etc/nginx/ssl/selfsigned.key \
+  -out /etc/nginx/ssl/selfsigned.crt \
+  -subj "/C=CH/ST=Zurich/L=Zurich/O=Secoverview/OU=Secoverview/CN=samuelgiger.com"
+
 cat <<EOF | sudo tee /etc/nginx/sites-available/$PROJECT_NAME
 server {
     listen 80;
     server_name _;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name _;
+
+    ssl_certificate /etc/nginx/ssl/selfsigned.crt;
+    ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
 
     location / {
         include proxy_params;
         proxy_pass http://unix:$DJANGO_DIR/$PROJECT_NAME.sock;
-        proxy_read_timeout 600s;
+        proxy_read_timeout 1200s;
         proxy_connect_timeout 60s;
-        proxy_send_timeout 600s;
+        proxy_send_timeout 1200s;
     }
 
     location /static/ {
