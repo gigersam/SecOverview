@@ -131,7 +131,7 @@ After=network.target
 User=$DJANGO_USER
 Group=www-data
 WorkingDirectory=$DJANGO_APP_DIR
-ExecStart=$DJANGO_DIR/$VENV_NAME/bin/gunicorn --workers 3 --bind unix:$DJANGO_DIR/$PROJECT_NAME.sock $PROJECT_NAME.wsgi:application --timeout 1200
+ExecStart=$DJANGO_DIR/$VENV_NAME/bin/gunicorn --workers 3 --bind unix:$DJANGO_DIR/$PROJECT_NAME.sock $PROJECT_NAME.wsgi:application --timeout 3600
 
 [Install]
 WantedBy=multi-user.target
@@ -189,9 +189,9 @@ server {
     location / {
         include proxy_params;
         proxy_pass http://unix:$DJANGO_DIR/$PROJECT_NAME.sock;
-        proxy_read_timeout 1200s;
+        proxy_read_timeout 3600s;
         proxy_connect_timeout 60s;
-        proxy_send_timeout 1200s;
+        proxy_send_timeout 3600s;
     }
 
     location /static/ {
