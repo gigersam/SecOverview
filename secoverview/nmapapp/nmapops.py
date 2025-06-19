@@ -39,7 +39,7 @@ def execute_nmap_scan_db(ip, parameters):
         hostnames = data_obj.get("hostnames", [])
         hostname = hostnames[0].get("name") if hostnames else ""
 
-        asset = NmapAssets.objects.get_or_create(hostname=hostname, ip_address=ip_address, defaults={"added_by_scan": scanconfig, "json_data": json.dumps(data_obj, indent=4)})
+        asset = NmapAssets.objects.update_or_create(hostname=hostname, ip_address=ip_address, defaults={"added_by_scan": scanconfig, "json_data": json.dumps(data_obj, indent=4)})
         AssetsNmapscan.objects.create(assets=asset[0], assets_json_data=data_obj, nmapscan=scanconfig)
     
     return result

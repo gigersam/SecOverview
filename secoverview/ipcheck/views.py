@@ -62,7 +62,8 @@ def get_external_ip_info(ip):
                     abuseipdb_data = None
         else:
             abuseipdb_data = None
-        if misp_instance != None or misp_instance != "none":
+
+        if misp_instance != None:
             cached_misp_data = IpcheckMISP.objects.filter(ip=ip).order_by('-created_at').first()
             if cached_misp_data and cached_misp_data.created_at > timezone.now() - timedelta(hours=24):
                 misp_data = cached_misp_data.data
@@ -75,6 +76,7 @@ def get_external_ip_info(ip):
                     misp_data = None
         else:
             misp_data = None
+
         return bgpviewdata, abuseipdb_data, misp_data
     else:
         bgpviewdata = None
@@ -90,16 +92,23 @@ def ipcheck(request):
         ip = request.POST.get('ip')
         if is_internal_ip(ip) != True:
             bgpviewdata, abuseipdb_data, misp_data = get_external_ip_info(ip)
+            if bgpviewdata != None:
+                bgpviewdata = bgpviewdata['data'] 
+            if abuseipdb_data != None:
+                abuseipdb_data = abuseipdb_data['data']
+            
+
+            
             return render(
                 request,
                 'ipcheck.html',
                 {
                     'title':'IP Check',
                     'year':datetime.now().year,
-                    'response':bgpviewdata['data'] if abuseipdb_data else "",
-                    'abuseipdb':abuseipdb_data['data'] if abuseipdb_data else None,
-                    'misp':misp_data if abuseipdb_data else None,
-                    'chatcontext':"This page is a bgp/asn check. Input allowed IP-Address. The following Data was returned: " + str(bgpviewdata['data']) + ". The abuseipdb data is: " + str(abuseipdb_data['data']) + ". The MISP data is: " + str(misp_data)
+                    'response':bgpviewdata,
+                    'abuseipdb':abuseipdb_data,
+                    'misp':misp_data,
+                    'chatcontext':"This page is a bgp/asn check. Input allowed IP-Address. The following Data was returned: " + str(bgpviewdata) + ". The abuseipdb data is: " + str(abuseipdb_data) + ". The MISP data is: " + str(misp_data)
                 }
             )
         else:

@@ -62,6 +62,8 @@ CREDENTIALSPASSWORD=$DJANGO_ADMIN_PASSWORD
 APISERVERURL=$LOCAL_INTERACTION_URL
 UPDATE_CYCLE_ASSETS = 30 # MINTUES
 UPDATE_CYCLE_RANSOMWARELIVE = 1 # DAYS
+UPDATE_CYCLE_RSS_FEED=1 # HOURS
+UPDATE_CYCLE_CVE_DATA=1 # DAYS
 EOF
 
 cat << EOF > services/mlnids_service/.env
@@ -129,7 +131,7 @@ After=network.target
 User=$DJANGO_USER
 Group=www-data
 WorkingDirectory=$DJANGO_APP_DIR
-ExecStart=$DJANGO_DIR/$VENV_NAME/bin/gunicorn --workers 3 --bind unix:$DJANGO_DIR/$PROJECT_NAME.sock $PROJECT_NAME.wsgi:application
+ExecStart=$DJANGO_DIR/$VENV_NAME/bin/gunicorn --workers 3 --bind unix:$DJANGO_DIR/$PROJECT_NAME.sock $PROJECT_NAME.wsgi:application --timeout 600
 
 [Install]
 WantedBy=multi-user.target
@@ -169,6 +171,9 @@ server {
     location / {
         include proxy_params;
         proxy_pass http://unix:$DJANGO_DIR/$PROJECT_NAME.sock;
+        proxy_read_timeout 600s;
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 600s;
     }
 
     location /static/ {

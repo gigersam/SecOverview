@@ -42,7 +42,7 @@ class MISP:
         else:
             return "Response:", response.text
         
-if settings.MISP_API_KEY != "your_api_key_here" or settings.MISP_API_KEY != "" or settings.MISP_SERVER != "IP":
+if not (settings.MISP_API_KEY == "your_api_key_here" or settings.MISP_API_KEY == "" or settings.MISP_SERVER == "ip" or settings.MISP_SERVER == 'misp_server_address_here'):
     misp_instance = MISP(
         mispaddr=settings.MISP_SERVER,
         misp_key=settings.MISP_API_KEY,
