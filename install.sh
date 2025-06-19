@@ -21,7 +21,9 @@ sudo apt update && sudo apt upgrade -y
 
 # Install necessary dependencies
 echo "Installing Python, pip, virtual environment, Git, and other dependencies..."
-sudo apt install -y python3 python3-venv python3-pip git nginx nmap ollama
+sudo apt install -y python3 python3-venv python3-pip git nginx nmap curl
+
+sudo curl -fsSL https://ollama.com/install.sh | sudo sh
 
 echo "Pulling $LLM_MODEL model for ollama"
 sudo ollama pull $LLM_MODEL
