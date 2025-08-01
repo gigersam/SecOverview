@@ -17,7 +17,7 @@ def get_token():
         "username": os.getenv('CREDENTIALSUSERNAME'),
         "password": os.getenv('CREDENTIALSPASSWORD')
     }
-    response = requests.post(url, json=CREDENTIALS)
+    response = requests.post(url, json=CREDENTIALS, timeout=3600, verify=False)
     if response.status_code == 200:
         tokens = response.json()
         return tokens.get("access"), tokens.get("refresh")
@@ -29,7 +29,7 @@ def refresh_token(refresh_token):
     url = BASE_URI + "/api/token/refresh"
     response = requests.post(url, data={
         'refresh': refresh_token,
-    })
+    }, timeout=3600, verify=False)
     if response.status_code == 200:
         tokens = response.json()
         return tokens.get("access"), refresh_token
@@ -59,8 +59,8 @@ def update_assets(last_update_assets, update_cycle_assets, headers):
     # Gather all Assets an
     if last_update_assets is None or (datetime.now() - last_update_assets) > timedelta(minutes=update_cycle_assets):
         url = BASE_URI + "/api/assets/gather/all"
-        response = requests.get(url, headers=headers)
-        if response == 200:
+        response = requests.get(url, headers=headers, timeout=3600, verify=False)
+        if response.status_code == 200:
             logging.info(f"ASSETS: Succsefully updated all assets.")
             last_update_assets = datetime.now()
             return last_update_assets
@@ -75,15 +75,15 @@ def update_ransomware(last_update_ransomware, update_cycle_ransomwarelive, heade
     # Gather ransomwarelive data
     if last_update_ransomware is None or (datetime.now() - last_update_ransomware) > timedelta(days=update_cycle_ransomwarelive):
         url = BASE_URI + "/api/ransomwarelive/groups/fetch"
-        response = requests.get(url, headers=headers)
-        if response == 200:
+        response = requests.get(url, headers=headers, timeout=3600, verify=False)
+        if response.status_code == 200:
             logging.info(f"ASSETS: Succsefully updated all ransomwarelive groups.")
         else:
             logging.info(f"ASSETS: Failed to update all ransomwarelive groups. Response code: {response.status_code}")
             return last_update_ransomware
         url = BASE_URI + "/api/ransomwarelive/victims/fetch"
-        response = requests.get(url, headers=headers)
-        if response == 200:
+        response = requests.get(url, headers=headers,  timeout=3600, verify=False)
+        if response.status_code == 200:
             logging.info(f"ASSETS: Succsefully updated all ransomwarelive victims.")
             last_update_ransomware = datetime.now()
             return last_update_ransomware
@@ -96,8 +96,8 @@ def update_ransomware(last_update_ransomware, update_cycle_ransomwarelive, heade
 def update_rss_feed(last_update_rss_feed, update_cycle_rss_feed, headers):
     if last_update_rss_feed is None or (datetime.now() - last_update_rss_feed) > timedelta(days=update_cycle_rss_feed):
         url = BASE_URI + "/api/assets/gather/all"
-        response = requests.get(url, headers=headers)
-        if response == 200:
+        response = requests.get(url, headers=headers, timeout=3600, verify=False)
+        if response.status_code == 200:
             logging.info(f"RSSFEED: Succsefully updated RSS Feed.")
             last_update_rss_feed = datetime.now()
             return last_update_rss_feed
@@ -111,8 +111,8 @@ def update_rss_feed(last_update_rss_feed, update_cycle_rss_feed, headers):
 def update_cve_data(last_update_cve_data, update_cycle_cve_data, headers):
     if last_update_cve_data is None or (datetime.now() - last_update_cve_data) > timedelta(days=update_cycle_cve_data):
         url = BASE_URI + "/api/cve/daily/get"
-        response = requests.get(url, headers=headers)
-        if response == 200:
+        response = requests.get(url, headers=headers, timeout=3600, verify=False)
+        if response.status_code == 200:
             logging.info(f"RSSFEED: Succsefully updated RSS Feed.")
             last_update_cve_data = datetime.now()
             return last_update_cve_data
