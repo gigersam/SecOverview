@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="p-4">
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>Living of the Land Command Searcher</h3> 
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="d-grid gap-4 d-md-flex">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="windows" id="flexCheckChecked" value="1" checked>
+                <label class="form-check-label" for="flexCheckChecked">
+                  Windows
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="linux" id="flexCheckChecked" value="1" checked>
+                <label class="form-check-label" for="flexCheckChecked">
+                  Linux
+                </label>
+            </div>
+        </div>
+        <label for="category">Category:</label>
+        <select class="form-select" name="category" aria-label="Category">
+            <option selected>None</option>
+            {% for category in categories %}
+            <option value="{{ category }}">Windows - {{ category }}</option>
+            {% endfor %}
+            {% for category in linuxcategories %}
+            <option value="{{ category.name }}">Linux - {{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="mitre_id">Mitre ID:</label>
+        <select class="form-select" name="mitre_id" aria-label="Mitre ID">
+            <option selected>None</option>
+            {% for mitre_id in mitre_ids %}
+            <option value="{{ mitre_id }}">{{ mitre_id }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit" class="btn btn-dark">Submit</button>
+
+    </form>
+
+    <div class="d-grid gap-4 d-md-flex">
+        <table class="table table-hover">
+            <tr>
+                <td><b>Binary</b></td>
+                <td><b>Functions</b></td>
+                <td><b>Actions</b></td>
+            </tr>
+            {% for lolinfo in livingoflanddata %}
+            <tr>
+                <td>{{ lolinfo.name }}</td>
+                <td>
+                    {% for command in lolinfo.commands.all %}
+                      {% if command.category == selected_category or selected_category == "None" or command.mitre_id == selected_mitre_id or selected_mitre_id == "None" %}
+                      <strong>{{ command.category }}:</strong> {{ command.command }}{% if not forloop.last %}<br><br>{% endif %}
+                      {% endif %}
+                    {% empty %}
+                      No commands
+                    {% endfor %}
+                </td>
+                <td><a href="{% url 'livingofflandbinary' lolinfo.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+            </tr>
+            {% endfor %}
+            {% for gtfobin in gtfobinsdata %}
+            <tr>
+                <td>{{ gtfobin.name }}</td>
+                <td>
+                    {% for command in gtfobin.function_examples.all %}
+                      {% if command.function.name == selected_category or selected_category == "None" %}
+                      <strong>{{ command.function.name }}:</strong> {{ command.code }}{% if not forloop.last %}<br><br>{% endif %}
+                      {% endif %}
+                    {% empty %}
+                      No commands
+                    {% endfor %}
+                </td>
+                <td><a href="{% url 'gtfobinsbinary' gtfobin.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}

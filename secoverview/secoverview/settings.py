@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'dashboard',
     'dnsops',
     'ipcheck',
+    'livingoffland',
     'main',
     'mlnids',
     'nmapapp',

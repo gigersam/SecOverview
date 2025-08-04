@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="p-4">
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>Living of the Land: {{ livingoflanddata.name }}</h3> 
+    </div>
+    <div class="d-grid gap-4 d-md-flex">
+        <p><strong>Author:</strong><br> {{ livingoflanddata.author }}</p>
+        <p><strong>Url:</strong><br><a href="{{ livingoflanddata.url }}">{{ livingoflanddata.url }}</a></p>
+    </div>
+    
+    <p><strong>Description:</strong><br> {{ livingoflanddata.description }}</p>
+    <p><strong>Paths:</strong><br>{% for path in livingoflanddata.full_paths.all %}{{ path.path }}<br>{% endfor %}</p>
+
+    <h4>Commands:</h4>
+    {% for command in livingoflanddata.commands.all %}
+        <p>{{ command.description }}</p>
+        <div class="d-grid gap-4 d-md-flex">
+            <p><strong>Command:</strong></p>
+            <p>{{ command.command }}</p>
+        </div>
+        <p><strong>Catregory:</strong> {{ command.category }}</p>
+        <p><strong>Mitre ID:</strong> {{ command.mitre_id }}</p>
+        <p><strong>Use Case:</strong> {{ command.usecase }}</p>
+        <p><strong>Privileges:</strong> {{ command.privileges }}</p>
+        <p><strong>OS:</strong> {{ command.operating_system }}</p>
+        <hr>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

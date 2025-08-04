@@ -28,6 +28,7 @@ urlpatterns = [
     path('assets/', include('assets.urls')),
     path('backup/', include('backup.urls')),
     path('ipcheck/', include('ipcheck.urls')),
+    path('livingoffland/', include('livingoffland.urls')),
     path('chat/', include('chat.urls')),
     path('cve/', include('cvedata.urls')),
     path('dashboard/', include('dashboard.urls')),

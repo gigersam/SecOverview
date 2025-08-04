@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="p-4">
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>GTFOBin: {{ gtfobinsdata.name }}</h3> 
+    </div>
+    
+    <p><strong>Description:</strong><br> {{ gtfobinsdata.description }}</p>
+    
+    <h4>Commands:</h4>
+    {% for command in gtfobinsdata.function_examples.all %}
+        <div class="d-grid gap-4 d-md-flex">
+            <p><strong>Command:</strong></p>
+            <p>{{ command.code }}</p>
+        </div>
+        <p><strong>Catregory:</strong> {{ command.function.name }}</p>
+        <p><strong>Description:</strong> {{ command.description }}</p>
+        <hr>
+    {% endfor %}
+</div>
+
+
+{% endblock %}
