@@ -33,7 +33,7 @@
             {% endfor %}
         </select>
         <br>
-        <label for="mitre_id">Mitre ID:</label>
+        <label for="mitre_id">Mitre ID (Windows Only):</label>
         <select class="form-select" name="mitre_id" aria-label="Mitre ID">
             <option selected>None</option>
             {% for mitre_id in mitre_ids %}
@@ -64,7 +64,7 @@
                       No commands
                     {% endfor %}
                 </td>
-                <td><a href="{% url 'livingofflandbinary' lolinfo.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+                <td><a href="{% url 'livingofflandbinary' lolinfo.pk %}"><button type="button" class="btn btn-dark">View</button></a><br><a href="{% url 'commandcreatorwindows' lolinfo.pk %}{% if selected_category and selected_category != 'None' %}?category={{ selected_category|urlencode }}{% endif %}"><button type="button" class="btn btn-dark">Creator</button></a></td>
             </tr>
             {% endfor %}
             {% for gtfobin in gtfobinsdata %}
@@ -79,7 +79,7 @@
                       No commands
                     {% endfor %}
                 </td>
-                <td><a href="{% url 'gtfobinsbinary' gtfobin.pk %}"><button type="button" class="btn btn-dark">View</button></a></td>
+                <td><a href="{% url 'gtfobinsbinary' gtfobin.pk %}"><button type="button" class="btn btn-dark">View</button></a><br><a href="{% url 'commandcreatorlinux' gtfobin.pk %}{% if selected_category and selected_category != 'None' %}?category={{ selected_category|urlencode }}{% endif %}"><button type="button" class="btn btn-dark">Creator</button></a></td>
             </tr>
             {% endfor %}
         </table>

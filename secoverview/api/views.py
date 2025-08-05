@@ -227,7 +227,7 @@ def api_dns_enumerate(request):
     return Response(subdomain_results, status=200)
 
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def api_ipcheck_get(request):
     ip = request.GET.get('q')
     print(f'query domain: {ip}')

@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .livingoffland_ops import get_lolbas_data, get_gtfobins_data
+from .livingoffland_ops import INVOKEARGFUSCATOR, get_lolbas_data, get_gtfobins_data, obfuscate_command_invokeargfusctor, obfuscate_command_base64
 from .models import LOLBASBinary, GTFObinsBinary, GTFObinsFunction
 
 @login_required
@@ -141,7 +141,7 @@ def livingofflandbinary(request, binary):
             request,
             'livingofflandbinary.html',
             {
-                'title':'Living of the Land Command Creator',
+                'title':'Living of the Land Command Searcher',
                 'year':datetime.now().year,
                 'livingoflanddata':livingoflanddata[0],
                 'chatcontext':""
@@ -156,11 +156,76 @@ def gtfobinsbinary(request, binary):
             request,
             'gtfobinsbinary.html',
             {
-                'title':'Living of the Land Command Creator',
+                'title':'Living of the Land Command Searcher',
                 'year':datetime.now().year,
                 'gtfobinsdata':gtfobinsdata[0],
                 'chatcontext':""
             }
         )
 
+def commandcreatorwindows(request, binary):
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    binary = LOLBASBinary.objects.with_all_related().filter(id=binary)
+    if request.method == 'POST':
+        category = request.POST.get("category")
+        command = request.POST.get("command")
+        print((binary[0].name).replace(".exe", ""))
+        #binary = LOLBASBinary.objects.with_all_related().filter(id=binary)
+        if (binary[0].name).replace(".exe", "").lower() in INVOKEARGFUSCATOR:
+            obfuscated = obfuscate_command_invokeargfusctor(command)
+            obfuscationmethod = "Invoke-ArgFuscator by wietze"
+        else:
+            obfuscated = obfuscate_command_base64(command)
+            obfuscationmethod = "Base64"
+        return render(
+                request,
+                'commandcreatorwindows.html',
+                {
+                    'title':'Living of the Land Command Creator',
+                    'year':datetime.now().year,
+                    'binary':binary[0],
+                    'category':category,
+                    'command':command,
+                    'obfuscated':obfuscated,
+                    'obfuscationmethod':obfuscationmethod,
+                    'chatcontext':""
+                }
+            )
+    else:
+        category = request.GET.get("category")
+        #binary = LOLBASBinary.objects.with_all_related().filter(id=binary)
 
+        return render(
+                request,
+                'commandcreatorwindows.html',
+                {
+                    'title':'Living of the Land Command Creator',
+                    'year':datetime.now().year,
+                    'binary':binary[0],
+                    'category':category,
+                    'command':"",
+                    'obfuscated':"",
+                    'chatcontext':""
+                }
+            )
+
+def commandcreatorlinux(request, binary):
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    category = request.GET.get("category")
+    if category == "None":
+        binary = GTFObinsBinary.objects.with_all_related().filter(id=binary)
+    else:
+        binary = GTFObinsBinary.objects.with_all_related().filter(Q(id=binary) & Q(function_examples__function__name=category.strip()))
+
+    return render(
+            request,
+            'commandcreatorlinux.html',
+            {
+                'title':'Living of the Land Command Creator',
+                'year':datetime.now().year,
+                'binary':binary[0],
+                'chatcontext':""
+            }
+        )

@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="p-4">
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>Binary: {{ binary.name }}</h3> 
+    </div>
+    
+    <p><strong>Description:</strong><br> {{ binary.description }}</p>
+
+    <p><strong>Paths:</strong><br>{% for path in binary.full_paths.all %}{{ path.path }}<br>{% endfor %}</p>
+
+    <h4>Options:</h4>
+    <form method="POST">
+        {% csrf_token %}
+        <select class="form-select" id="category" name="category" aria-label="Category">
+            {% for command in binary.commands.all %}
+            {% if command.category == category %}
+            {% load string %}
+            <option selected value="{{ command.category }}"  data-description="{{ command.command }}">{{ command.category }}</option>
+            {% else %}
+            <option value="{{ command.category }}" data-description="{{ command.command }}">{{ command.category }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        
+        <br>
+        
+        <textarea class="form-control" id="command" name="command" rows="3" placeholder="Select a Option">{% if command %}{{ command }}{% endif %}</textarea>
+        <br>
+        <button type="submit" class="btn btn-dark">Obfuscate</button>
+        <br>
+        {% if obfuscated %} 
+        <br>
+        <label><strong>Obfuscated Command ({{ obfuscationmethod }}):</strong></label>
+        <textarea class="form-control" id="command_obfuscated" name="command_obfuscated" rows="5" placeholder="Select a Option" readonly>{% if obfuscated %}{{ obfuscated }}{% endif %}</textarea>
+        {% endif %}
+
+    </form>
+    
+    {% for command in gtfobinsdata.function_examples.all %}
+        <div class="d-grid gap-4 d-md-flex">
+            <p><strong>Command:</strong></p>
+            <p>{{ command.code }}</p>
+        </div>
+        <p><strong>Catregory:</strong> {{ command.function.name }}</p>
+        <p><strong>Description:</strong> {{ command.description }}</p>
+        <hr>
+    {% endfor %}
+</div>
+
+
+<script>
+    const select = document.getElementById('category');
+    const textbox = document.getElementById('command');
+  
+    function updateTextbox() {
+        const opt = select.options[select.selectedIndex];
+        textbox.value = opt.dataset.description || '';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!textbox.value) {
+            updateTextbox();
+        }
+    });
+
+  select.addEventListener('change', updateTextbox);
+</script>
+{% endblock %}

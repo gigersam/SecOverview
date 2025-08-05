@@ -7,4 +7,7 @@ urlpatterns = [
     path('binary/windows/<int:binary>', views.livingofflandbinary, name='livingofflandbinary'),
     path('binary/linux/<int:binary>', views.gtfobinsbinary, name='gtfobinsbinary'),
     path('commandsearcher', views.livingofflandcommandsearch, name='livingofflandcommandsearch'),
+    path('commandcreator/windows/<int:binary>', views.commandcreatorwindows, name='commandcreatorwindows'),
+    path('commandcreator/linux/<int:binary>', views.commandcreatorlinux, name='commandcreatorlinux'),
+
 ]

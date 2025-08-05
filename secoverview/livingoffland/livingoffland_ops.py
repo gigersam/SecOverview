@@ -3,6 +3,8 @@ import requests
 import zipfile
 import io
 import yaml
+import base64
+import subprocess
 from pathlib import Path
 from .models import (
     LOLBASBinary, LOLBASCommand, LOLBASTag, LOLBASFullPath,
@@ -10,6 +12,74 @@ from .models import (
     GTFObinsBinary, GTFObinsFunction, GTFObinsFunctionExample
 )
 
+INVOKEARGFUSCATOR = ["addinutil",
+"adfind",
+"arp",
+"aspnet_compiler",
+"at",
+"auditpol",
+"bcdedit",
+"bitsadmin",
+"cacls",
+"certreq",
+"certutil",
+"cipher",
+"cmdkey",
+"cmstp",
+"csc",
+"cscript",
+"curl",
+"dism",
+"driverquery",
+"expand",
+"extrac32",
+"findstr",
+"fltmc",
+"forfiles",
+"fsutil",
+"ftp",
+"icacls",
+"ipconfig",
+"jsc",
+"makecab",
+"msbuild",
+"msiexec",
+"nbtstat",
+"net",
+"netsh",
+"netstat",
+"nltest",
+"nslookup",
+"ping",
+"pnputil",
+"powershell",
+"procdump",
+"psexec",
+"query",
+"regedit",
+"reg",
+"regsvr32",
+"robocopy",
+"route",
+"rpcping",
+"runas",
+"schtasks",
+"sc",
+"secedit",
+"takeown",
+"tar",
+"taskkill",
+"tasklist",
+"vaultcmd",
+"vbc",
+"w32tm",
+"wevtutil",
+"where",
+"whoami",
+"winget",
+"wmic",
+"wscript",
+"xcopy"]
 
 def get_lolbas_data():
     try:
@@ -113,3 +183,25 @@ def get_gtfobins_data():
                     description=example.get("description"),
                     code=example.get("code"),
                 )
+
+def obfuscate_command_invokeargfusctor(command):
+    command = command.replace('.exe', '').lower()
+    result = subprocess.run(
+        ['pwsh', '-c', f"Invoke-ArgFuscator -Command '{command}'"],          # Command and arguments
+        capture_output=True,   # Capture stdout and stderr
+        text=True              # Return output as string instead of bytes
+    )
+    return result.stdout
+
+
+def obfuscate_command_base64(cmd: str) -> str:
+    """
+    Obfuscate a Windows CMD command by Base64-encoding it and invoking via PowerShell.
+
+    Example:
+        obfuscate_windows_cmd('dir C:\\')
+        -> powershell -NoProfile -EncodedCommand <Base64UTF16LE>
+    """
+    # PowerShell expects UTF-16LE encoding for -EncodedCommand
+    b64 = base64.b64encode(cmd.encode('utf-16le')).decode()
+    return f"powershell -NoProfile -EncodedCommand {b64}"
