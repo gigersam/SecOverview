@@ -50,3 +50,11 @@ class WebTechFingerprinting_Results(models.Model):
     domain = models.ForeignKey(WebTechFingerprinting_Scan, on_delete=models.CASCADE)
     technologie = models.CharField(max_length=100)
     version = models.TextField(null=True, blank=True, default=None)
+
+class WebOpsScan(models.Model):
+    domain = models.CharField(max_length=255)
+    webtech = models.ForeignKey(WebTechFingerprinting_Scan, on_delete=models.CASCADE)
+    crtshscan = models.ForeignKey(CRTSHScan, on_delete=models.CASCADE)
+    webheader = models.ForeignKey(WebHeaderCheck, on_delete=models.CASCADE)
+    llmsummary = models.TextField(null=True, blank=True, default=None)
+    scaned_at = models.DateTimeField(auto_now_add=True)

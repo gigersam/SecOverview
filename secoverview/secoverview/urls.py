@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('assets/', include('assets.urls')),
     path('backup/', include('backup.urls')),
+    path('command/', include('c2.urls')),
     path('ipcheck/', include('ipcheck.urls')),
     path('livingoffland/', include('livingoffland.urls')),
     path('chat/', include('chat.urls')),

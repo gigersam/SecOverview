@@ -3,6 +3,50 @@ from .models import DNSQuery, DNSRecord
 import dns.resolver
 import dns.zone
 import dns.query
+import itertools
+import random
+
+# Keyboard adjacency map for QWERTY layout (simplified)
+keyboard_adjacent = {
+    'a': ['q', 'w', 's', 'z'],
+    'b': ['v', 'g', 'h', 'n'],
+    'c': ['x', 'd', 'f', 'v'],
+    'd': ['s', 'e', 'r', 'f', 'c', 'x'],
+    'e': ['w', 's', 'd', 'r'],
+    'f': ['d', 'r', 't', 'g', 'v', 'c'],
+    'g': ['f', 't', 'y', 'h', 'b', 'v'],
+    'h': ['g', 'y', 'u', 'j', 'n', 'b'],
+    'i': ['u', 'j', 'k', 'o'],
+    'j': ['h', 'u', 'i', 'k', 'm', 'n'],
+    'k': ['j', 'i', 'o', 'l', 'm'],
+    'l': ['k', 'o', 'p'],
+    'm': ['n', 'j', 'k'],
+    'n': ['b', 'h', 'j', 'm'],
+    'o': ['i', 'k', 'l', 'p'],
+    'p': ['o', 'l'],
+    'q': ['w', 'a'],
+    'r': ['e', 'd', 'f', 't'],
+    's': ['a', 'w', 'e', 'd', 'x', 'z'],
+    't': ['r', 'f', 'g', 'y'],
+    'u': ['y', 'h', 'j', 'i'],
+    'v': ['c', 'f', 'g', 'b'],
+    'w': ['q', 'a', 's', 'e'],
+    'x': ['z', 's', 'd', 'c'],
+    'y': ['t', 'g', 'h', 'u'],
+    'z': ['a', 's', 'x']
+}
+
+# Homoglyph map (partial)
+homoglyphs = {
+    'a': ['à', 'á', 'â', 'ä', 'æ', 'ɑ'],
+    'e': ['è', 'é', 'ê', 'ë', 'ē', 'ė', 'ę'],
+    'i': ['ì', 'í', 'î', 'ï', 'ī', 'į', 'ı'],
+    'o': ['ò', 'ó', 'ô', 'ö', 'ø', 'ō'],
+    'u': ['ù', 'ú', 'û', 'ü', 'ū'],
+    'c': ['ç', 'ć', 'č'],
+    's': ['ś', 'š', 'ş'],
+    'n': ['ñ', 'ń']
+}
 
 # Wordlists: https://github.com/danielmiessler/SecLists/blob/master/Discovery/DNS/
 def get_dns_wordlist_data():
@@ -48,3 +92,36 @@ def enumerate_dns_records(domain):
             subdomain_results[full_domain] = subdomain_records
     
     return subdomain_results
+
+def generate_variants(domain):
+    domain_name, tld = domain.split('.', 1)
+    variants = set()
+
+    # Swap adjacent letters
+    for i in range(len(domain_name) - 1):
+        swapped = list(domain_name)
+        swapped[i], swapped[i + 1] = swapped[i + 1], swapped[i]
+        variants.add("".join(swapped) + '.' + tld)
+
+    # Remove one letter
+    for i in range(len(domain_name)):
+        variants.add(domain_name[:i] + domain_name[i+1:] + '.' + tld)
+
+    # Add random letter
+    for i in range(len(domain_name) + 1):
+        for c in 'abcdefghijklmnopqrstuvwxyz':
+            variants.add(domain_name[:i] + c + domain_name[i:] + '.' + tld)
+
+    # Replace with keyboard-adjacent keys
+    for i, ch in enumerate(domain_name):
+        if ch in keyboard_adjacent:
+            for adj in keyboard_adjacent[ch]:
+                variants.add(domain_name[:i] + adj + domain_name[i+1:] + '.' + tld)
+
+    # Replace with homoglyphs
+    for i, ch in enumerate(domain_name):
+        if ch in homoglyphs:
+            for glyph in homoglyphs[ch]:
+                variants.add(domain_name[:i] + glyph + domain_name[i+1:] + '.' + tld)
+
+    return sorted(variants)

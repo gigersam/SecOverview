@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="p-4">
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>Campaign Creator</h3> 
+    </div>
+    
+    <form method="POST">
+      {% csrf_token %}  
+      <div class="d-grid gap-4 d-md-flex">
+        <label>Campaign Name:</label>
+        <input class="form-control me-2" name="campaignname" placeholder="Campaign Name" aria-label="campaignname" required="required">
+      </div>  
+      <br>
+      <div class="d-grid gap-4 d-md-flex">
+        <p>Templates: </p>
+        <select class="form-select" id="category" name="category" aria-label="Category">
+          {% for template in campaigntemplates %}
+          <option value="{{ template.name }}"  data-description="{{ template.name }}">{{ template.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-dark">Create</button>
+    </form>
+
+</div>
+
+
+{% endblock %}

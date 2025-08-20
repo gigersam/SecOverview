@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CRTSHScan, CRTSHResult, WebHeaderCheck, WebTechFingerprinting_Scan, WebTechFingerprinting_Results
+from .models import CRTSHScan, CRTSHResult, WebHeaderCheck, WebTechFingerprinting_Scan, WebTechFingerprinting_Results, WebOpsScan
 
 @admin.register(WebHeaderCheck)
 class WebHeaderCheckAdmin(admin.ModelAdmin):
@@ -47,3 +47,5 @@ class WebTechFingerprinting_ResultsAdmin(admin.ModelAdmin):
     ]
     search_fields = ['domain','technologie']
     list_filter = ['domain']
+
+admin.site.register(WebOpsScan)

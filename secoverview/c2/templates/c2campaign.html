@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="p-4">
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>Campains</h3> 
+        <a href="{% url 'c2campaigncreator' %}"><button class="btn btn-dark">Create Campaign</button></a>
+    </div>
+    <div class="d-grid gap-4 d-md-flex">
+      <table class="table table-hover">
+          <tr>
+              <td><b>Campain</b></td>
+              <td><b>Bot Count</b></td>
+              <td><b>Site Type</b></td>
+          </tr>
+          {% for campaign in campaign %}
+          <tr>
+            <td><a href="{% url 'c2campaigninfo' campaign.uuid %}">{{ campaign.name }}</a></td>
+            <td>{{ campaign.bot_set.count }}</td>
+            <td>{{ campaign.site_template.name }}</td>
+          </tr>
+          {% endfor %}
+      </table>
+    </div>
+</div>
+
+
+{% endblock %}

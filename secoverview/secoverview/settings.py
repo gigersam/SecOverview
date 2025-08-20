@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'api',
     'assets',
     'backup',
+    'c2',
     'chat',
     'cvedata',
     'dashboard',

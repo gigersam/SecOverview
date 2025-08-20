@@ -176,7 +176,7 @@ def commandcreatorwindows(request, binary):
             obfuscated = obfuscate_command_invokeargfusctor(command)
             obfuscationmethod = "Invoke-ArgFuscator by wietze"
         else:
-            obfuscated = obfuscate_command_base64(command)
+            obfuscated = obfuscate_command_base64(command, 'windows')
             obfuscationmethod = "Base64"
         return render(
                 request,

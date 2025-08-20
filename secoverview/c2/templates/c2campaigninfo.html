@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="p-4">
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>Campaign {{ campaign.name }}</h3> 
+        <a href="{% url 'c2campaignpage' campaign.uuid %}" target="_blank"><button class="btn btn-dark">Campain Page</button></a>
+    </div>
+
+
+    <p><strong>Name:</strong> {{ campaign.name }}</p>
+    <p><strong>Template:</strong> {{ campaign.site_template.name }}</p>
+    <p><strong>Campaign URL:</strong> {{ request.scheme }}://{{ request.get_host }}{% url 'c2campaignpage' campaign.uuid %}</p>
+    <h4>Clients:</h4>
+    <div class="d-grid gap-4 d-md-flex">
+        <table class="table table-hover">
+            <tr>
+                <td><b>Online</b></td>
+                <td><b>Bot Name</b></td>
+                <td><b>IP-Address</b></td>
+                <td><b>System Info</b></td>
+            </tr>
+            {% for bot in bots %}
+            <tr>
+              <td>{{ bot.last_seen }}</td>
+              <td><a href="{% url 'c2bot_detail' bot.id %}">{{ bot.uuid }}</a></td>
+              <td>{{ bot.ip_address }}</td>
+              <td>{{ bot.system_info }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+      </div>
+    <hr>
+</div>
+
+{% endblock %}

@@ -8,7 +8,21 @@
         {% csrf_token %}
         <label class="me-2" for="id_domain">Domain:</label>
         <input type="text" class="form-control" name="domain" id="id_domain" required><br><br>
-
+        <div class="d-grid gap-4 d-md-flex">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="subdomain" id="flexCheckChecked" value="1" checked>
+                <label class="form-check-label" for="flexCheckChecked">
+                  Sub-Domain Enumeration
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="obfuscation" id="flexCheckChecked" value="1" checked>
+                <label class="form-check-label" for="flexCheckChecked">
+                  Domain Obfuscation
+                </label>
+            </div>
+        </div>
+        <br>
         <button type="submit" class="btn btn-dark">Check</button>
     </form>
     <br>
@@ -36,9 +50,8 @@
                     <form action="{% url 'ipcheck' %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" class="form-control" name="ip" id="id_IP" value="{{ obj }}">
-                        <button type="submit" class="btn btn-dark">Check IP</button>
-                    </form>
-                </div> 
+                        <button type="submit" class="btn btn-dark">Check IP</button>                    </form>
+                </div>
                 {% else %}
                 <p>{{ obj }}</p>
                 {% endif %} {% endfor %}
@@ -48,7 +61,13 @@
     </table>
     {% endfor %}
     {% endif %}
-
+    {% if obfuscation != "" %}
+    <hr>
+    <h3>Obfuscation for Domain: {{ domainname }}</h3>
+    {% for element in obfuscation %}
+    <p>{{ element }}</p>
+    {% endfor %}
+    {% endif %}
 </div>
 
 

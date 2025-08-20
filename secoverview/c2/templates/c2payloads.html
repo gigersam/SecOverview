@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="p-4">
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>Payload Creator</h3> 
+    </div>
+    
+    <form method="POST">
+      {% csrf_token %}    
+      <div class="d-grid gap-4 d-md-flex">
+        <p>Client Type: </p>
+        <select class="form-select" id="category" name="category" aria-label="Category">
+          <option value="windowsc"  data-description="windowsc">Windows C</option>
+          <option value="linuxc"  data-description="linuxc">Linux C</option> 
+          <option value="python"  data-description="python">Python</option> 
+        </select>
+      </div>
+      <br>
+      <div class="d-grid gap-4 d-md-flex">
+        <label>Client UUID/Name (Unique!):</label>
+        <input class="form-control me-2" name="clientuuid" placeholder="Client123" aria-label="clientuuid" required="required">
+      </div>
+      <br>
+      <div class="d-grid gap-4 d-md-flex">
+        <label>C2 Server IP:</label>
+        <input class="form-control me-2" name="serverip" placeholder="Server IP-Address" aria-label="serverip" required="required">
+      </div>
+      <br>
+      <div class="d-grid gap-4 d-md-flex">
+        <label>C2 Server Port:</label>
+        <input class="form-control me-2" name="serverport" placeholder="Server Port" aria-label="serverport" required="required">
+      </div>
+
+      <br>
+      <button type="submit" class="btn btn-dark">Create</button>
+    </form>
+
+    {% if fileid %}
+    <br>
+    <a href="{% url 'c2payloadsdownload' fileid %}"><button class="btn btn-dark">Download Payloads</button></a>
+    {% endif %}
+</div>
+
+
+{% endblock %}

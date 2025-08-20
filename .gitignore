@@ -23,3 +23,5 @@ secoverview/dnsops/domainlists/*.txt
 
 
 secoverview/livingoffland/gtfobins
+secoverview/c2/data/*
+secoverview/c2/clients/*

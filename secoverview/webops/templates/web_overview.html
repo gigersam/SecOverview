@@ -8,11 +8,18 @@
         {% csrf_token %}
         <label class="me-2" for="id_domain">Domain to check:</label>
         <input type="text" class="form-control" name="domain" id="id_domain" required><br><br>
-
-        <button type="submit" class="btn btn-dark">Check</button>
+        <div class="d-grid gap-4 d-md-flex">
+            <button type="submit" class="btn btn-dark">Check</button>
+            <button type="submit" name="action" value="checkllm" class="btn btn-dark">Check with LLM Summary</button>
+        </div> 
     </form>
     <br>
     {% if domain %}
+    {% if llm != "" %}
+    <h5><b>LLM Summary:</b></h5>
+    <p>{{ llm }}</p>
+    <br>
+    {% endif %}
     <div class="d-grid gap-4 d-md-flex">
         <h5><b>Domain:</b> {{ domain }}</h5>
         <form action="{% url 'nmapscan' %}" method="POST">

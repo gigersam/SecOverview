@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="p-4">
+    <div class="d-grid gap-4 d-md-flex">
+        <h3>Bot: {{ bot.uuid }}</h3> 
+    </div>
+    <h4>Infos about Client</h4>
+    <div class="d-grid gap-4 d-md-flex">
+      <table class="table table-hover">
+          <tr>
+              <td><b>IP:</b></td>
+              <td>{{ bot.ip_address }}</td>
+          </tr>
+          <tr>
+            <td><b>System Type:</b></td>
+            <td>{{ bot.system_info }}</td>
+          </tr>
+          <tr>
+            <td><b>Client Type:</b></td>
+            <td>{{ bot.client_type }}</td>
+          </tr>
+          <tr>
+            <td><b>Last Connection:</b></td>
+            <td>{{ bot.last_seen }}</td>
+          </tr>
+          {% if bot.campain.name != None %}
+          <tr>
+            <td><b>Campain:</b></td>
+            <td><a href="{% url 'c2campaigninfo' bot.campain.uuid %}">{{ bot.campain.name }}</a></td>
+          </tr>
+          {% endif %}
+      </table>
+    </div>
+
+    <br>
+        
+    <h4>Send Command</h4>
+    <div class="d-grid gap-4 d-md-flex">
+      <label>Select predefined Command: </label>
+      <select class="form-select" id="commandselect" name="commandselect" aria-label="Commandselect">
+        <option value="" data-description="">None</option>
+        {% for taskcommand in taskcommands %}
+        <option value="{{ taskcommand.name }}" data-description="{{ taskcommand.command }}" data-args="{{ taskcommand.args }}"">{{ taskcommand.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <br>
+    <form method="post">{% csrf_token %}
+      <div class="d-grid gap-4 d-md-flex">
+        <input class="form-control me-2" id="command" name="command" placeholder="Command" aria-label="command">
+        <input class="form-control me-2" id="args" name="args" placeholder="Args (for special functions)" aria-label="args">
+        <button class="btn btn-dark" type="submit">Execute</button>
+      </div>
+    </form>
+    <br>
+    <h4>Command History</h4>
+    <div class="accordion accordion-flush" id="accordiontasks">
+      {% for task in tasks %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-heading{{ task.pk }}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ task.pk }}" aria-expanded="false" aria-controls="flush-collapse{{ task.pk }}">
+            [{{ task.status }}] {{ task.command }}
+          </button>
+        </h2>
+        <div id="flush-collapse{{ task.pk }}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{ task.pk }}" data-bs-parent="#accordiontasks">
+          <div class="accordion-body">
+            <div class="d-grid gap-4 d-md-flex">
+              <p><strong>Requested: </strong>{{ task.requested_at }}</p>
+              <p><strong>Completed; </strong>{{ task.completed_at }}</p>
+            </div>
+            <pre>{{ task.result }}</pre>
+            <div class="d-grid gap-4 d-md-flex">
+              <form method="post" action="{% url 'c2taskdelete' task.pk %}">{% csrf_token %}<button class="btn btn-dark">Delete</button></form>
+              {% if "Filepath: " in task.result %}
+              <form method="post" action="{% url 'c2taskdownload' task.bot.pk task.pk %}">{% csrf_token %}<button class="btn btn-dark">Download File</button></form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}  
+    </div>
+    <br>
+    <a href="{% url 'c2dashboard' %}"><button class="btn btn-dark">Back</button></a>
+</div>
+
+<script>
+  const select = document.getElementById('commandselect');
+  const textbox = document.getElementById('command');
+  const args = document.getElementById('args');
+
+  function updateTextbox() {
+      const opt = select.options[select.selectedIndex];
+      textbox.value = opt.dataset.description || '';
+      args.value = opt.dataset.args || '';
+  }
+  select.addEventListener('change', updateTextbox);
+</script>
+
+{% endblock %}

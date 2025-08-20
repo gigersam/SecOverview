@@ -6,8 +6,10 @@ from django.utils import timezone
 from django.conf import settings
 from .misp_client import misp_instance
 from .models import IpcheckMISP, IpcheckAbuseIPDB, Ipcheckbgpview
+from chat.clearnebel_agent_builder import clearnebel
 import requests
 import ipaddress
+
 
 def is_internal_ip(ip):
     try:
@@ -90,6 +92,7 @@ def ipcheck(request):
     assert isinstance(request, HttpRequest)
     if request.method == 'POST':
         ip = request.POST.get('ip')
+        action = request.POST.get('action')
         if is_internal_ip(ip) != True:
             bgpviewdata, abuseipdb_data, misp_data = get_external_ip_info(ip)
             if bgpviewdata != None:
@@ -97,7 +100,9 @@ def ipcheck(request):
             if abuseipdb_data != None:
                 abuseipdb_data = abuseipdb_data['data']
             
-
+            if action == "checkllm":
+                if clearnebel != "":
+                    llmresponse = clearnebel.get_response_as_html(f"Summarize the data with security aspects: {bgpviewdata}, {abuseipdb_data}, {misp_data}")
             
             return render(
                 request,
@@ -108,6 +113,7 @@ def ipcheck(request):
                     'response':bgpviewdata,
                     'abuseipdb':abuseipdb_data,
                     'misp':misp_data,
+                    'llm':llmresponse,
                     'chatcontext':"This page is a bgp/asn check. Input allowed IP-Address. The following Data was returned: " + str(bgpviewdata) + ". The abuseipdb data is: " + str(abuseipdb_data) + ". The MISP data is: " + str(misp_data)
                 }
             )
@@ -121,6 +127,7 @@ def ipcheck(request):
                     'response':f"IP is Private",
                     'abuseipdb':None,
                     'misp':None,
+                    'llm':None,
                     'chatcontext':"This page is a bgp/asn check. Input allowed IP-Address."
                 }
             )

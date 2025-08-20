@@ -194,7 +194,7 @@ def obfuscate_command_invokeargfusctor(command):
     return result.stdout
 
 
-def obfuscate_command_base64(cmd: str) -> str:
+def obfuscate_command_base64(cmd: str, os: str) -> str:
     """
     Obfuscate a Windows CMD command by Base64-encoding it and invoking via PowerShell.
 
@@ -204,4 +204,10 @@ def obfuscate_command_base64(cmd: str) -> str:
     """
     # PowerShell expects UTF-16LE encoding for -EncodedCommand
     b64 = base64.b64encode(cmd.encode('utf-16le')).decode()
-    return f"powershell -NoProfile -EncodedCommand {b64}"
+    if os == "windows":
+        command = f"powershell -NoProfile -EncodedCommand {b64}"
+    elif os == "linux":
+        command = f"echo {b64} | base64 -d | bash"
+    else:
+        command = f"{b64}"
+    return command
